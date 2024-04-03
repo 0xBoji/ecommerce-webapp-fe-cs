@@ -1,0 +1,19 @@
+﻿@model ecommerce_webapp_fe_cs.Models.ProfileModel
+
+<div class="profile-container">
+    <h1>User Profile</h1>
+    <div>
+        <p>Username: @Model.Username</p>
+        <p>First Name: @Model.FirstName</p>
+        <p>Last Name: @Model.LastName</p>
+        <p>Phone Number: @Model.PhoneNum</p>
+        @if (!string.IsNullOrEmpty(Model.UserImg))
+        {
+            <img src="@Model.UserImg" alt="User Image" style="max-width: 150px; max-height: 150px;" />
+        }
+    </div>
+    <!-- Logout Button -->
+    <form asp-action="Logout" asp-controller="Account" method="post">
+        <button type="submit" class="btn btn-danger">Logout</button>
+    </form>
+</div>

@@ -29,7 +29,6 @@ public class ProductController : Controller
             var jsonString = await response.Content.ReadAsStringAsync();
             var jObject = JObject.Parse(jsonString);
 
-            // Extracting the $values array directly
             var productsArray = jObject["$values"]?.ToObject<List<Product>>();
 
             if (productsArray != null)
@@ -51,7 +50,7 @@ public class ProductController : Controller
 
     public async Task<IActionResult> Details(string id)
     {
-        var requestUrl = $"https://localhost:7195/api/v1/products/{id}"; // Construct the URL with the product ID
+        var requestUrl = $"https://localhost:7195/api/v1/products/{id}"; 
         var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
         var client = _clientFactory.CreateClient();
 

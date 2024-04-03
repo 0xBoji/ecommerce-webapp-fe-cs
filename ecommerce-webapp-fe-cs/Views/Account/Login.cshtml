@@ -1,0 +1,14 @@
+﻿@model ecommerce_webapp_fe_cs.Models.LoginModel
+
+<form asp-action="Login" method="post">
+    <div asp-validation-summary="ModelOnly"></div>
+    <div>
+        <label asp-for="Email"></label>
+        <input asp-for="Email" />
+    </div>
+    <div>
+        <label asp-for="Password"></label>
+        <input asp-for="Password" type="password" />
+    </div>
+    <button type="submit">Login</button>
+</form>
