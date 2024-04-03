@@ -106,11 +106,34 @@ public class accountController : Controller
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> ProfileEdit(ProfileEditModel model)
+	public async Task<IActionResult> ProfileEdit(ProfileEditModel model, IFormFile file)
 	{
-		if (ModelState.IsValid)
+		//check if login or not
+        var userEmail = HttpContext.Session.GetString("UserEmail");
+        if (string.IsNullOrEmpty(userEmail))
+        {
+            return Unauthorized("User is not authenticated.");
+        }
+
+        if (ModelState.IsValid)
 		{
-			var client = _clientFactory.CreateClient();
+            if (file != null && file.Length > 0)
+            {
+                var filename = DateTime.Now.Ticks + file.FileName;
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", filename);
+                using (var stream = new FileStream(filePath, FileMode.Create)) //to upload the pic into the folder we've created
+                {
+                    await file.CopyToAsync(stream);
+                }
+                model.UserImg = filename;
+			}
+			else
+			{
+                ModelState.AddModelError(string.Empty, "File upload failed");
+				return View(model);
+            }
+
+            var client = _clientFactory.CreateClient();
 			var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
 			var response = await client.PostAsync("https://localhost:7195/api/v1/accounts/profile/edit", content);
 
