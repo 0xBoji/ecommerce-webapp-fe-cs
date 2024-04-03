@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ecommerce_webapp_fe_cs.Models;
+namespace ecommerce_webapp_fe_cs.Models.AccountModels;
 
 public class UserRegistrationModel
 {

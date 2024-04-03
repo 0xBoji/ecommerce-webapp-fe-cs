@@ -1,6 +1,9 @@
-﻿@model ecommerce_webapp_fe_cs.Models.LoginModel
+﻿@model ecommerce_webapp_fe_cs.Models.AccountModels.LoginModel
 
-<form asp-action="Login" method="post">
+@{
+	Layout = "_LayoutLogin";
+}
+@* <form asp-action="Login" method="post">
     <div asp-validation-summary="ModelOnly"></div>
     <div>
         <label asp-for="Email"></label>
@@ -11,4 +14,59 @@
         <input asp-for="Password" type="password" />
     </div>
     <button type="submit">Login</button>
-</form>
+</form> *@
+
+<div class="limiter">
+	<div class="container-login100">
+		<div class="wrap-login100">
+			<div class="login100-pic js-tilt" data-tilt>
+				<img src="~/login/images/img-01.png" alt="IMG">
+			</div>
+
+			<form class="login100-form validate-form" asp-action="Login" method="post">
+				<span class="login100-form-title">
+					Member Login
+				</span>
+
+				<div asp-validation-summary="ModelOnly" style="color: red;font-weight: bolder;padding-left: 30px;padding-bottom: 10px;"></div>
+				<div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
+					<input class="input100" type="email" placeholder="Email" asp-for="Email">
+					<span class="focus-input100"></span>
+					<span class="symbol-input100">
+						<i class="fa fa-envelope" aria-hidden="true"></i>
+					</span>
+				</div>
+
+				<div class="wrap-input100 validate-input" data-validate="Password is required">
+					<input class="input100" type="password" placeholder="Password" asp-for="Password">
+					<span class="focus-input100"></span>
+					<span class="symbol-input100">
+						<i class="fa fa-lock" aria-hidden="true"></i>
+					</span>
+				</div>
+
+				<div class="container-login100-form-btn">
+					<button class="login100-form-btn" type="submit">
+						Login
+					</button>
+				</div>
+
+				<div class="text-center p-t-12">
+					<span class="txt1">
+						Forgot
+					</span>
+					<a class="txt2" href="#">
+						Username / Password?
+					</a>
+				</div>
+
+				<div class="text-center p-t-136">
+					<a class="txt2" href="/Account/Signup">
+						Create your Account
+						<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
+					</a>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

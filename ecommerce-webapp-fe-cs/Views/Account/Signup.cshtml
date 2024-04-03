@@ -1,26 +1,75 @@
-﻿@model ecommerce_webapp_fe_cs.Models.UserRegistrationModel
+﻿@model ecommerce_webapp_fe_cs.Models.AccountModels.UserRegistrationModel
+@{
+    Layout = "_LayoutLogin";
+}
 
-<form asp-action="SignUp" method="post">
-    <div asp-validation-summary="ModelOnly"></div>
-    <div>
-        <label asp-for="Email"></label>
-        <input asp-for="Email" />
-    </div>
-    <div>
-        <label asp-for="Username"></label>
-        <input asp-for="Username" />
-    </div>
-    <div>
-        <label asp-for="PhoneNum"></label>
-        <input asp-for="PhoneNum" />
-    </div>
-    <div>
-        <label asp-for="Password"></label>
-        <input asp-for="Password" type="password" />
-    </div>
-    <div>
-        <label asp-for="ConfirmPassword"></label>
-        <input asp-for="ConfirmPassword" type="password" />
-    </div>
-    <button type="submit">Sign Up</button>
-</form>
+<div class="limiter">
+	<div class="container-login100">
+		<div class="wrap-login100">
+			<div class="login100-pic js-tilt" data-tilt>
+				<img src="~/login/images/img-01.png" alt="IMG">
+			</div>
+
+			<form class="login100-form validate-form" asp-action="Signup" method="post">
+				<span class="login100-form-title">
+					Member Signup
+				</span>
+
+				<div asp-validation-summary="ModelOnly" style="color: red;font-weight: bolder;padding-left: 30px;padding-bottom: 10px;"></div>
+				<div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
+					<input class="input100" type="email" placeholder="Email" asp-for="Email">
+					<span class="focus-input100"></span>
+					<span class="symbol-input100">
+						<i class="fa fa-envelope" aria-hidden="true"></i>
+					</span>
+				</div>
+
+				<div asp-validation-summary="ModelOnly" style="color: red;font-weight: bolder;padding-left: 30px;padding-bottom: 10px;"></div>
+				<div class="wrap-input100 validate-input" data-validate="UserName must be contained">
+					<input class="input100" type="text" placeholder="Username" asp-for="Username">
+					<span class="focus-input100"></span>
+					<span class="symbol-input100">
+						<i class="fa fa-envelope" aria-hidden="true"></i>
+					</span>
+				</div>
+
+				<div class="wrap-input100 validate-input" data-validate="PhoneNumber must be contained">
+					<input class="input100" type="text" placeholder="PhoneNumber" asp-for="PhoneNum">
+					<span class="focus-input100"></span>
+					<span class="symbol-input100">
+						<i class="fa fa-phone" aria-hidden="true"></i>
+					</span>
+				</div>
+
+				<div class="wrap-input100 validate-input" data-validate="Password is required">
+					<input class="input100" type="password" placeholder="Password" asp-for="Password">
+					<span class="focus-input100"></span>
+					<span class="symbol-input100">
+						<i class="fa fa-lock" aria-hidden="true"></i>
+					</span>
+				</div>
+
+				<div class="wrap-input100 validate-input" data-validate="ConfirmPassword is required">
+					<input class="input100" type="password" placeholder="ConfirmPassword" asp-for="ConfirmPassword">
+					<span class="focus-input100"></span>
+					<span class="symbol-input100">
+						<i class="fa fa-lock" aria-hidden="true"></i>
+					</span>
+				</div>
+
+				<div class="container-login100-form-btn">
+					<button class="login100-form-btn" type="submit">
+						Signup
+					</button>
+				</div>
+
+				<div class="text-center p-t-136">
+					<a class="txt2" href="/Account/Login">
+						Sign In
+						<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
+					</a>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
