@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ecommerce_webapp_fe_cs.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ecommerce_webapp_fe_cs.Models.ProductModels;
 
 namespace ecommerce_webapp_fe_cs.Controllers;
 public class ProductController : Controller

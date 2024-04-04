@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using ecommerce_webapp_fe_cs.Models.ProductModels;
 
-namespace ecommerce_webapp_fe_cs.Models
+namespace ecommerce_webapp_fe_cs.Models.AccountModels
 {
     public class Category
     {

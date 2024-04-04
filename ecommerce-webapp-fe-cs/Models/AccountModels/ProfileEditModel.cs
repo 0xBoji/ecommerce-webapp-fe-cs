@@ -1,6 +1,6 @@
-﻿namespace ecommerce_webapp_fe_cs.Models;
+﻿namespace ecommerce_webapp_fe_cs.Models.AccountModels;
 
-public class ProfileModel
+public class ProfileEditModel
 {
     public string Username { get; set; }
     public string FirstName { get; set; }
@@ -8,3 +8,4 @@ public class ProfileModel
     public string PhoneNum { get; set; }
     public string UserImg { get; set; }
 }
+
