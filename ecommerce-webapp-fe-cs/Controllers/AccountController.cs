@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
-using ecommerce_webapp_fe_cs.Models;
 using ecommerce_webapp_fe_cs.Models;
 
 public class accountController : Controller
