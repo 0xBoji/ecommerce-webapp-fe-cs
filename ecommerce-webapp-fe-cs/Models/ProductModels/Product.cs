@@ -1,6 +1,5 @@
 ﻿using System.Text.Json.Serialization;
 using System.Collections.Generic;
-using ecommerce_webapp_fe_cs.Models.AccountModels;
 
 namespace ecommerce_webapp_fe_cs.Models.ProductModels
 {
