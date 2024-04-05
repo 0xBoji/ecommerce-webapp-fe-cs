@@ -1,16 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
-using System.Reflection;
 using ecommerce_webapp_fe_cs.Models.AccountModels;
 
-public class accountController : Controller
+public class AccountController : Controller
 {
 	private readonly IHttpClientFactory _clientFactory;
 
-	public accountController(IHttpClientFactory clientFactory)
+	public AccountController(IHttpClientFactory clientFactory)
 	{
 		_clientFactory = clientFactory;
 	}
