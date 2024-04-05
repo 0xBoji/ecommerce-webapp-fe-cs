@@ -4,8 +4,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ecommerce_webapp_fe_cs.Models;
-using ecommerce_webapp_fe_cs.Models;
 using Microsoft.AspNetCore.Http;
+using ecommerce_webapp_fe_cs.Models.AccountModels;
 
 public class accountController : Controller
 {
@@ -78,7 +78,7 @@ public class accountController : Controller
             if (response.IsSuccessStatusCode)
             {
                 HttpContext.Session.SetString("UserEmail", model.Email);
-                return RedirectToAction("Profile");  
+                return RedirectToAction("Profile");
             }
             else
             {
