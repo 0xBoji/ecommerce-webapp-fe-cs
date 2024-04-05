@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <title>Arts - Admin Dashboard</title>
+
+    <link rel="icon" type="image/png" sizes="16x16" href="~/assets/images/favicon.png" asp-append-version="true" />
+    <link href="~/assets/vendor/pg-calendar/css/pignose.calendar.min.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/assets/vendor/chartist/css/chartist.min.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/assets/css/style.css" rel="stylesheet" asp-append-version="true" />
+</head>
+<body>
+    <!--Preloader-->
+    <div id="preloader">
+        <div class="sk-three-bounce">
+            <div class="sk-child sk-bounce1"></div>
+            <div class="sk-child sk-bounce2"></div>
+            <div class="sk-child sk-bounce3"></div>
+        </div>
+    </div>
+
+    <!-- Main wrapper -->
+    <div id="main-wrapper">
+        @if (Context.Session.GetString("Is_Admin") == "True")
+        {
+            <!-- Nav header -->
+            <div class="nav-header">
+                <a href="@Url.Action("Index", "Admin")" class="brand-logo">
+                    <img class="logo-abbr" src="~/assets/images/logo.png" asp-append-version="true" />
+                    <img class="logo-compact" src="~/assets/images/logo-text.png" asp-append-version="true" />
+                    <img class="brand-title" src="~/assets/images/logo-text.png" asp-append-version="true" />
+                </a>
+                <div class="nav-control">
+                    <div class="hamburger">
+                        <span class="line"></span><span class="line"></span><span class="line"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Header -->
+            <div class="header">
+                <div class="header-content">
+                    <nav class="navbar navbar-expand">
+                        <div class="collapse navbar-collapse justify-content-between">
+                            <div class="header-left">
+                                <div class="search_bar dropdown">
+                                    <span class="search_icon p-3 c-pointer" data-toggle="dropdown"><i class="mdi mdi-magnify"></i></span>
+                                    <div class="dropdown-menu p-0 m-0">
+                                        <form>
+                                            <input class="form-control" type="search" placeholder="Search" aria-label="Search" />
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Sidebar start -->
+            <div class="quixnav">
+                <div class="quixnav-scroll">
+                    <ul class="metismenu" id="menu">
+                        <li class="nav-label first">Main Menu</li>
+                        <li>
+                            <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                                <i class="icon icon-single-04"></i><span class="nav-text">Dashboard</span>
+                            </a>
+                            <ul aria-expanded="false">
+                                <li><a href="@Url.Action("", "")">Products</a></li>
+                                <li><a href="@Url.Action("", "")">Categories</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-label">Account</li>
+                        <li>
+                            <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                                <i class="icon icon-single-copy-06"></i><span class="nav-text">Pages</span>
+                            </a>
+                            <ul aria-expanded="false">
+                                <li>
+                                    @if (string.IsNullOrEmpty(Context.Session.GetString("UserEmail")))
+                                    {
+                                        <a class="genric-btn info circle" asp-controller="Admin" asp-action="LoginAdmin">Login</a>
+                                    }
+                                    else
+                                    {
+                                        <form asp-controller="Admin" asp-action="Logout" method="post">
+                                            <button type="submit" class="btn btn-success info circle" style="margin:10px 0px 10px 42px; border:none; color:#878a9e; background-color:#353b5e;">Logout</button>
+                                        </form>
+                                    }
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning" role="alert">
+                You must be an admin and logged in to view this content.
+            </div>
+            <!-- Provide a link or button to go to the login page -->
+            <a class="btn btn-primary" style="margin: 250px 0 0 700px;" href="@Url.Action("LoginAdmin", "Admin")">Go to Login Page</a>
+
+        }
+        <!-- Content -->
+        <div class="content-body">
+            <div class="container-fluid">
+                <div class="row page-titles mx-0">
+                    <div class="col-sm-12 p-md-0">
+                        <div class="welcome-text">
+                            <h4>Welcome back!</h4>
+                            <p class="mb-0">Have a nice day!</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    @RenderBody()
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="copyright">
+                <p>Copyright © Designed &amp; Developed by Quixkit</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <!-- Required vendors -->
+    <script src="~/assets/vendor/global/global.min.js" asp-append-version="true"></script>
+    <script src="~/assets/js/quixnav-init.js" asp-append-version="true"></script>
+    <script src="~/assets/js/custom.min.js" asp-append-version="true"></script>
+    <script src="~/assets/vendor/chartist/js/chartist.min.js" asp-append-version="true"></script>
+    <script src="~/assets/vendor/moment/moment.min.js" asp-append-version="true"></script>
+    <script src="~/assets/vendor/pg-calendar/js/pignose.calendar.min.js" asp-append-version="true"></script>
+    <script src="~/assets/js/dashboard/dashboard-2.js" asp-append-version="true"></script>
+
+</body>
+</html>
