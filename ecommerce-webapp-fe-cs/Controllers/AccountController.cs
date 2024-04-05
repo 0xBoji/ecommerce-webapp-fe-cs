@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ecommerce_webapp_fe_cs.Models;
 using ecommerce_webapp_fe_cs.Models;
+using Microsoft.AspNetCore.Http;
 
 public class accountController : Controller
 {
@@ -14,7 +15,6 @@ public class accountController : Controller
     {
         _clientFactory = clientFactory;
     }
-
     public IActionResult SignUp()
     {
         return View();
@@ -40,6 +40,26 @@ public class accountController : Controller
         }
         return View(model);
     }
+    public IActionResult GoogleLogin()
+    {
+        return Redirect("https://localhost:7195/google/login");
+    }
+
+    public IActionResult GoogleLoginCallback(string token)
+    {
+        // Store the token in a secure, HTTP-only cookie
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true, // Set to true if using HTTPS, which is recommended
+            Expires = DateTime.UtcNow.AddDays(7) // Set the cookie to expire when the token does
+        };
+        Response.Cookies.Append("JWTToken", token, cookieOptions);
+
+        // Redirect to remove the token from the URL for security
+        return RedirectToAction("Profile");
+    }
+
 
     public IActionResult Login()
     {
@@ -57,9 +77,8 @@ public class accountController : Controller
 
             if (response.IsSuccessStatusCode)
             {
-                // On successful login, set the user email in the session
                 HttpContext.Session.SetString("UserEmail", model.Email);
-                return RedirectToAction("Profile");  // Redirect to profile to immediately see user information
+                return RedirectToAction("Profile");  
             }
             else
             {
@@ -72,34 +91,72 @@ public class accountController : Controller
 
     public async Task<IActionResult> Profile()
     {
-        // Example: Fetching user email from session. Adjust based on your authentication mechanism.
+        ProfileModel profileModel = null;
+
+        // Try to get user email from session (regular login)
         var userEmail = HttpContext.Session.GetString("UserEmail");
-        if (string.IsNullOrEmpty(userEmail))
-        {
-            return Unauthorized("User is not authenticated.");
-        }
 
+        // Prepare HttpClient for the request
         var client = _clientFactory.CreateClient();
-        var response = await client.GetAsync($"https://localhost:7195/api/v1/accounts/profile?email={userEmail}");
 
-        if (response.IsSuccessStatusCode)
+        if (!string.IsNullOrEmpty(userEmail))
         {
-            var jsonString = await response.Content.ReadAsStringAsync();
-            var profileModel = JsonConvert.DeserializeObject<ProfileModel>(jsonString);
-            return View(profileModel);
+            // If email exists, fetch profile using email
+            var response = await client.GetAsync($"https://localhost:7195/api/v1/accounts/profile?email={userEmail}");
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonString = await response.Content.ReadAsStringAsync();
+                profileModel = JsonConvert.DeserializeObject<ProfileModel>(jsonString);
+            }
         }
         else
         {
-            return NotFound("Profile not found.");
+            // If no email, try to get JWT token (Google login)
+            var token = Request.Cookies["JWTToken"];
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                var response = await client.GetAsync("https://localhost:7195/api/v1/accounts/profile");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var jsonString = await response.Content.ReadAsStringAsync();
+                    profileModel = JsonConvert.DeserializeObject<ProfileModel>(jsonString);
+                }
+            }
+        }
+
+        if (profileModel != null)
+        {
+            return View(profileModel); // Return the profile view with the model
+        }
+        else
+        {
+            return Unauthorized("User is not authenticated."); // Or redirect to login
         }
     }
 
-    public IActionResult Logout()
+
+
+    public IActionResult CaptureToken(string token)
     {
-        HttpContext.Session.Clear(); // Clears the session, effectively logging out the user
-        return RedirectToAction("Index", "Home");
+        if (!string.IsNullOrEmpty(token))
+        {
+            Response.Cookies.Append("JWTToken", token, new CookieOptions { HttpOnly = true, Secure = true });
+            return RedirectToAction("Profile");
+        }
+
+        return Unauthorized("Token is missing or invalid.");
     }
 
 
+
+    [HttpPost]
+    public IActionResult Logout()
+    {
+        HttpContext.Session.Clear(); // Clears the session
+        Response.Cookies.Delete("JWTToken"); // Clears the JWT token cookie
+        return RedirectToAction("Login"); // Redirects to the login page
+    }
 
 }

@@ -5,7 +5,6 @@
     <div>
         <h2>@product.ProName</h2>
         <p>@product.Description - Price: @product.Price</p>
-        <!-- Link to the Details page for each product -->
         <a asp-controller="Product" asp-action="Details" asp-route-id="@product.ProId">View Details</a>
     </div>
 }
