@@ -100,53 +100,62 @@ public class accountController : Controller
 		return RedirectToAction("Index", "Home");
 	}
 
-	public IActionResult ProfileEdit()
+	public async Task<IActionResult> ProfileEdit()
 	{
-		return View();
+		var userEmail = HttpContext.Session.GetString("UserEmail");
+		if (string.IsNullOrEmpty(userEmail))
+		{
+			return Unauthorized("User is not authenticated.");
+		}
+
+		var client = _clientFactory.CreateClient();
+		var response = await client.GetAsync($"https://localhost:7195/api/v1/accounts/profile?email={userEmail}");
+
+		if (response.IsSuccessStatusCode)
+		{
+			var jsonString = await response.Content.ReadAsStringAsync();
+			var profileModel = JsonConvert.DeserializeObject<ProfileEditModel>(jsonString);
+			return View(profileModel);
+		}
+		else
+		{
+			return NotFound("Profile not found.");
+		}
 	}
 
 	[HttpPost]
 	public async Task<IActionResult> ProfileEdit(ProfileEditModel model, IFormFile file)
 	{
 		//check if login or not
-        var userEmail = HttpContext.Session.GetString("UserEmail");
-        if (string.IsNullOrEmpty(userEmail))
-        {
-            return Unauthorized("User is not authenticated.");
-        }
-
-        if (ModelState.IsValid)
+		var userEmail = HttpContext.Session.GetString("UserEmail");
+		if (string.IsNullOrEmpty(userEmail))
 		{
-            if (file != null && file.Length > 0)
-            {
-                var filename = DateTime.Now.Ticks + file.FileName;
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", filename);
-                using (var stream = new FileStream(filePath, FileMode.Create)) //to upload the pic into the folder we've created
-                {
-                    await file.CopyToAsync(stream);
-                }
-                model.UserImg = filename;
-			}
-			else
+			return Unauthorized("User is not authenticated.");
+		}
+		
+			if (file != null && file.Length > 0)
 			{
-                ModelState.AddModelError(string.Empty, "File upload failed");
-				return View(model);
-            }
+				var filename = $"{DateTime.Now.Ticks}_{file.FileName}";
+				var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", filename);
+				using (var stream = new FileStream(filePath, FileMode.Create))
+				{
+					await file.CopyToAsync(stream);
+				}
+				model.UserImg = filename;
+			}
 
-            var client = _clientFactory.CreateClient();
+			var client = _clientFactory.CreateClient();
 			var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
-			var response = await client.PostAsync("https://localhost:7195/api/v1/accounts/profile/edit", content);
+			var response = await client.PutAsync($"https://localhost:7195/api/v1/accounts/profile/edit?email={userEmail}", content);
 
 			if (response.IsSuccessStatusCode)
 			{
-				return RedirectToAction("Index", "Home");
+				return RedirectToAction("Profile", "Account");
 			}
 			else
 			{
-				ModelState.AddModelError(string.Empty, "Registration failed.");
+				ModelState.AddModelError(string.Empty, "Edit failed.");
 			}
-		}
 		return View(model);
 	}
-
 }
