@@ -1,13 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using Newtonsoft.Json;
+using ecommerce_webapp_fe_cs.Models;
+using Microsoft.AspNetCore.Http;
 using ecommerce_webapp_fe_cs.Models.AccountModels;
 
 public class AccountController(IHttpClientFactory clientFactory) : Controller
 {
     private readonly IHttpClientFactory _clientFactory = clientFactory;
 
-    public IActionResult SignUp() => View();
+    public IActionResult SignUp()
+    {
+        return View();
+    }
 
     [HttpPost]
     public async Task<IActionResult> SignUp(UserRegistrationModel model)
@@ -29,8 +34,31 @@ public class AccountController(IHttpClientFactory clientFactory) : Controller
         }
         return View(model);
     }
+    public IActionResult GoogleLogin()
+    {
+        return Redirect("https://localhost:7195/google/login");
+    }
 
-    public IActionResult Login() => View();
+    public IActionResult GoogleLoginCallback(string token)
+    {
+        // Store the token in a secure, HTTP-only cookie
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true, // Set to true if using HTTPS, which is recommended
+            Expires = DateTime.UtcNow.AddDays(7) // Set the cookie to expire when the token does
+        };
+        Response.Cookies.Append("JWTToken", token, cookieOptions);
+
+        // Redirect to remove the token from the URL for security
+        return RedirectToAction("Profile");
+    }
+
+
+    public IActionResult Login()
+    {
+        return View();
+    }
 
     [HttpPost]
     public async Task<IActionResult> Login(LoginModel model)
@@ -43,9 +71,8 @@ public class AccountController(IHttpClientFactory clientFactory) : Controller
 
             if (response.IsSuccessStatusCode)
             {
-                // On successful login, set the user email in the session
                 HttpContext.Session.SetString("UserEmail", model.Email);
-                return RedirectToAction("Profile");  // Redirect to profile to immediately see user information
+                return RedirectToAction("Profile");
             }
             else
             {
@@ -58,7 +85,76 @@ public class AccountController(IHttpClientFactory clientFactory) : Controller
 
     public async Task<IActionResult> Profile()
     {
-        // Example: Fetching user email from session. Adjust based on your authentication mechanism.
+        ProfileModel profileModel = null;
+
+        // Try to get user email from session (regular login)
+        var userEmail = HttpContext.Session.GetString("UserEmail");
+
+        // Prepare HttpClient for the request
+        var client = _clientFactory.CreateClient();
+
+        if (!string.IsNullOrEmpty(userEmail))
+        {
+            // If email exists, fetch profile using email
+            var response = await client.GetAsync($"https://localhost:7195/api/v1/accounts/profile?email={userEmail}");
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonString = await response.Content.ReadAsStringAsync();
+                profileModel = JsonConvert.DeserializeObject<ProfileModel>(jsonString);
+            }
+        }
+        else
+        {
+            // If no email, try to get JWT token (Google login)
+            var token = Request.Cookies["JWTToken"];
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                var response = await client.GetAsync("https://localhost:7195/api/v1/accounts/profile");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var jsonString = await response.Content.ReadAsStringAsync();
+                    profileModel = JsonConvert.DeserializeObject<ProfileModel>(jsonString);
+                }
+            }
+        }
+
+        if (profileModel != null)
+        {
+            return View(profileModel); // Return the profile view with the model
+        }
+        else
+        {
+            return Unauthorized("User is not authenticated."); // Or redirect to login
+        }
+    }
+
+
+
+    public IActionResult CaptureToken(string token)
+    {
+        if (!string.IsNullOrEmpty(token))
+        {
+            Response.Cookies.Append("JWTToken", token, new CookieOptions { HttpOnly = true, Secure = true });
+            return RedirectToAction("Profile");
+        }
+
+        return Unauthorized("Token is missing or invalid.");
+    }
+
+
+
+    [HttpPost]
+    public IActionResult Logout()
+    {
+        HttpContext.Session.Clear(); // Clears the session
+        Response.Cookies.Delete("JWTToken"); // Clears the JWT token cookie
+        return RedirectToAction("Login"); // Redirects to the login page
+    }
+
+    public async Task<IActionResult> ProfileEdit()
+    {
         var userEmail = HttpContext.Session.GetString("UserEmail");
         if (string.IsNullOrEmpty(userEmail))
         {
@@ -71,7 +167,7 @@ public class AccountController(IHttpClientFactory clientFactory) : Controller
         if (response.IsSuccessStatusCode)
         {
             var jsonString = await response.Content.ReadAsStringAsync();
-            var profileModel = JsonConvert.DeserializeObject<ProfileModel>(jsonString);
+            var profileModel = JsonConvert.DeserializeObject<ProfileEditModel>(jsonString);
             return View(profileModel);
         }
         else
@@ -79,14 +175,6 @@ public class AccountController(IHttpClientFactory clientFactory) : Controller
             return NotFound("Profile not found.");
         }
     }
-
-    public IActionResult Logout()
-    {
-        HttpContext.Session.Clear(); // Clears the session, effectively logging out the user
-        return RedirectToAction("Index", "Home");
-    }
-
-    public IActionResult ProfileEdit() => View();
 
     [HttpPost]
     public async Task<IActionResult> ProfileEdit(ProfileEditModel model, IFormFile file)
@@ -98,38 +186,29 @@ public class AccountController(IHttpClientFactory clientFactory) : Controller
             return Unauthorized("User is not authenticated.");
         }
 
-        if (ModelState.IsValid)
+        if (file != null && file.Length > 0)
         {
-            if (file != null && file.Length > 0)
+            var filename = $"{DateTime.Now.Ticks}_{file.FileName}";
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", filename);
+            using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                var filename = DateTime.Now.Ticks + file.FileName;
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", filename);
-                using (var stream = new FileStream(filePath, FileMode.Create)) //to upload the pic into the folder we've created
-                {
-                    await file.CopyToAsync(stream);
-                }
-                model.UserImg = filename;
+                await file.CopyToAsync(stream);
             }
-            else
-            {
-                ModelState.AddModelError(string.Empty, "File upload failed");
-                return View(model);
-            }
+            model.UserImg = filename;
+        }
 
-            var client = _clientFactory.CreateClient();
-            var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
-            var response = await client.PostAsync("https://localhost:7195/api/v1/accounts/profile/edit", content);
+        var client = _clientFactory.CreateClient();
+        var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+        var response = await client.PutAsync($"https://localhost:7195/api/v1/accounts/profile/edit?email={userEmail}", content);
 
-            if (response.IsSuccessStatusCode)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            else
-            {
-                ModelState.AddModelError(string.Empty, "Registration failed.");
-            }
+        if (response.IsSuccessStatusCode)
+        {
+            return RedirectToAction("Profile", "Account");
+        }
+        else
+        {
+            ModelState.AddModelError(string.Empty, "Edit failed.");
         }
         return View(model);
     }
-
 }

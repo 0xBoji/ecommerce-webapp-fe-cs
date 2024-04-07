@@ -31,8 +31,8 @@
                             <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "Home")">Home <span class="sr-only">(current)</span></a></li>
                             <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "Product")">Products</a></li>
                             <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "Blog")">Blog</a></li>
-                            <li class="nav-item"><a class="nav-link" href="@Url.Action("About", "AboutContact")">About</a></li>
-                            <li class="nav-item"><a class="nav-link" href="@Url.Action("Contact", "AboutContact")">Contact</a></li>
+                            <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "About")">About</a></li>
+                            <li class="nav-item"><a class="nav-link" href="@Url.Action("Index", "Contact")">Contact</a></li>
                             <li class="nav-item">
                                 <a class="nav-link" href="@Url.Action("Index", "Cart")">
                                     <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 456.029 456.029" style="enable-background:new 0 0 456.029 456.029;" xml:space="preserve">
@@ -42,7 +42,7 @@
                                 </a>
                             </li>
 
-                            @* Search *@
+                            <!-- Header Search -->
                             <form class="form-inline">
                                 <button class="btn my-2 my-sm-0 nav_search-btn" type="submit">
                                     <i class="fa fa-search" aria-hidden="true"></i>
@@ -85,6 +85,7 @@
             </div>
         </header>
 
+        <!-- Header Carousel -->
         <section class="slider_section ">
             <div class="slider_bg_box"><img src="~/ecommerce/images/slider-bg.jpg" alt="#"></div>
             <div id="customCarousel1" class="carousel slide" data-ride="carousel">
@@ -94,7 +95,7 @@
                             <div class="row">
                                 <div class="col-md-7 col-lg-6 ">
                                     <div class="detail-box">
-                                        <h1><span>Sale 10% Off</span> <br /> On Basic Tee</h1>
+                                        <h1><span>Sale 10% Off</span> <br /> On Greeting Cards</h1>
                                         <p>
                                             Explicabo esse amet tempora quibusdam laudantium, laborum eaque magnam fugiat hic? 
                                             Esse dicta aliquid error repudiandae earum suscipit fugiat molestias, veniam, 
@@ -111,7 +112,7 @@
                             <div class="row">
                                 <div class="col-md-7 col-lg-6">
                                     <div class="detail-box">
-                                        <h1><span>Sale 5% Off</span> <br /> On Cleanser</h1>
+                                        <h1><span>Sale 5% Off</span> <br /> On Face Cleanser</h1>
                                         <p>
                                             Explicabo esse amet tempora quibusdam laudantium, laborum eaque magnam fugiat hic?
                                             Esse dicta aliquid error repudiandae earum suscipit fugiat molestias, veniam,
@@ -128,7 +129,7 @@
                             <div class="row">
                                 <div class="col-md-7 col-lg-6">
                                     <div class="detail-box">
-                                        <h1><span>Sale 10% Off</span> <br /> On Hat</h1>
+                                        <h1><span>Sale 10% Off</span> <br /> On Wallet</h1>
                                         <p>
                                             Explicabo esse amet tempora quibusdam laudantium, laborum eaque magnam fugiat hic?
                                             Esse dicta aliquid error repudiandae earum suscipit fugiat molestias, veniam,
@@ -156,11 +157,11 @@
         @RenderBody()
     </div>
 
-    <!-- footer start -->
+    <!-- Footer -->
     <footer>
         <div class="container">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-sm-12 col-md-8">
                     <div class="full">
                         <div class="logo_footer">
                             <a href="@Url.Action("Index", "Home")"><img width="210" src="~/ecommerce/images/logo.png" alt="#"></a>
@@ -172,22 +173,22 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-4">
                     <div class="row">
-                        <div class="col-md-7">
+                        <div class="col-sm-12 col-md-12">
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-sm-6 col-md-6">
                                     <div class="widget_menu">
                                         <h3>Menu</h3>
                                         <ul>
                                             <li><a href="@Url.Action("Index", "Home")">Home</a></li>
                                             <li><a href="@Url.Action("Index", "Blog")">Blog</a></li>
-                                            <li><a href="@Url.Action("About", "AboutContact")">About</a></li>
-                                            <li><a href="@Url.Action("Contact", "AboutContact")">Contact</a></li>
+                                            <li><a href="@Url.Action("Index", "About")">About</a></li>
+                                            <li><a href="@Url.Action("Index", "Contact")">Contact</a></li>
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-sm-6 col-md-6">
                                     <div class="widget_menu">
                                         <h3>Account</h3>
                                         <ul>
@@ -200,22 +201,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-5">
-                            <div class="widget_menu">
-                                <h3>Newsletter</h3>
-                                <div class="information_f"><p>Subscribe by our newsletter and get update protidin!</p></div>
-                                <div class="form_sub">
-                                    <form>
-                                        <fieldset>
-                                            <div class="field">
-                                                <input type="email" placeholder="Enter Your Mail" name="email" />
-                                                <input type="submit" value="Subscribe" />
-                                            </div>
-                                        </fieldset>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
