@@ -1,11 +1,47 @@
-﻿@model IEnumerable<ecommerce_webapp_fe_cs.Models.ProductModels.Product>
-
-@foreach (var product in Model)
-{
-    <div>
-        <h2>@product.ProName</h2>
-        <p>@product.Description - Price: @product.Price</p>
-        <!-- Link to the Details page for each product -->
-        <a asp-controller="Product" asp-action="Details" asp-route-id="@product.ProId">View Details</a>
-    </div>
+﻿@{
+    Layout = "~/Views/Shared/_LayoutStore.cshtml";
 }
+
+@model IEnumerable<ecommerce_webapp_fe_cs.Models.ProductModels.Product>
+
+<section class="product_section layout_padding">
+    <div class="container">
+        <div class="heading_container heading_center">
+            <h2>
+                All <span>Products</span>
+            </h2>
+        </div>
+
+        @foreach (var product in Model)
+        {
+            <div class="row">
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="box">
+                        <div class="option_container">
+                            <div class="options">
+                                <a href="@Url.Action("Detail/{id}", "Product")" class="option1">Details</a>
+                                <a href="@Url.Action("Index", "Cart")" class="option2">Buy Now</a>
+                            </div>
+                        </div>
+                        <div class="img-box">
+                            <img src="@product.Image" alt=""> @* Image *@
+                        </div>
+                        <div class="detail-box">
+                            <h5>@product.ProName</h5>
+                            <h6>@product.Price</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+@*
+<table>
+    <h2>@product.ProName</h2>
+    <p>@product.Description - Price: @product.Price</p>
+    <!-- Link to the Details page for each product -->
+    <a asp-controller="Product" asp-action="Details" asp-route-id="@product.ProId">View Details</a>
+</table>
+*@

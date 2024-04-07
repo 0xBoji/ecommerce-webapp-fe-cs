@@ -1,79 +1,58 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ecommerce_webapp_fe_cs.Models.AccountModels;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace ecommerce_webapp_fe_cs.Controllers;
-public class AdminController : Controller
+public class AdminController(IHttpClientFactory clientFactory) : Controller
 {
-    public IActionResult Index()
+    private readonly IHttpClientFactory _clientFactory = clientFactory;
+
+    public IActionResult Index() => View();
+    public async Task<IActionResult> Dashboard()
     {
-        return View();
+        var userEmail = HttpContext.Session.GetString("UserEmail");
+        if (string.IsNullOrEmpty(userEmail)) return Unauthorized("User is not authenticated.");
+        
+        var client = _clientFactory.CreateClient();
+        var response = await client.GetAsync($"https://localhost:7195/api/v1/accounts/profile?email={userEmail}");
+
+        if (response.IsSuccessStatusCode)
+        {
+            return View();
+        }
+        else
+        {
+            return NotFound("Profile not found.");
+        }
     }
 
-    //[HttpPost]
-    //public async Task<IActionResult> LoginAdmin()
-    //{
-    //    if (ModelState.IsValid)
-    //    {
-    //        try
-    //        {
-    //            using (NgoManagementContext context = new NgoManagementContext())
-    //            {
-    //                var user = await context.Users
-    //                    .FirstOrDefaultAsync(u => u.Email == model.Email);
+    [HttpPost]
+    public async Task<IActionResult> Login(LoginModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            var client = _clientFactory.CreateClient();
+            var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+            var response = await client.PostAsync("https://localhost:7195/api/v1/accounts/login", content);
 
-    //                if (user != null)
-    //                {
-    //                    if (BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
-    //                    {
-    //                        if (user.IsAdmin)
-    //                        {
-    //                            HttpContext.Session.SetString("UserID", user.UserId.ToString());
-    //                            HttpContext.Session.SetString("Is_Admin", user.IsAdmin.ToString());
+            if (response.IsSuccessStatusCode)
+            {
+                // On successful login, set the user email in the session
+                HttpContext.Session.SetString("UserEmail", model.Email);
+                return RedirectToAction("Index", "Admin");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Login failed.");
+            }
+        }
+        return View(model);
+    }
 
-    //                            return RedirectToAction("Index"); // Redirect to the admin dashboard
-    //                        }
-    //                        else
-    //                        {
-    //                            // User is not an admin
-    //                            throw new UnauthorizedAccessException("You do not have admin privileges.");
-    //                        }
-    //                    }
-    //                    else
-    //                    {
-    //                        // Password is incorrect
-    //                        throw new ArgumentException("Invalid login attempt.");
-    //                    }
-    //                }
-    //                else
-    //                {
-    //                    // Email does not exist
-    //                    throw new ArgumentException("Invalid login attempt.");
-    //                }
-    //            }
-    //        }
-    //        catch (Exception ex)
-    //        {
-    //            ModelState.AddModelError(string.Empty, ex.Message);
-    //            return View(model);
-    //        }
-    //    }
-    //    return View(model);
-    //}
-
-    //[HttpPost]
-    //public IActionResult Logout()
-    //{
-    //	HttpContext.Session.Clear();
-    //	return RedirectToAction("LoginAdmin", "Admin");
-    //}
-
-
-    //public IActionResult Dashboard()
-    //{
-    //	if (HttpContext.Session.GetString("") != "True")
-    //	{
-    //		return RedirectToAction("LoginAdmin"); // Redirect non-admin users to the login page
-    //	}
-
-    //	return View(); // Return the Dashboard view for admin users
-    //}
+    public IActionResult Logout()
+    {
+        HttpContext.Session.Clear(); // Clears the session, effectively logging out the user
+        return RedirectToAction("Login", "Account");
+    }
 }

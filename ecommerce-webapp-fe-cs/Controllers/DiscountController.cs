@@ -1,17 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using ecommerce_webapp_fe_cs.Models.ProductModels;
 
 namespace ecommerce_webapp_fe_cs.Controllers;
-public class ProductController(ILogger<ProductController> logger, IHttpClientFactory clientFactory) : Controller
+public class DiscountController(ILogger<DiscountController> logger, IHttpClientFactory clientFactory) : Controller
 {
-    private readonly ILogger<ProductController> _logger = logger;
+    private readonly ILogger<DiscountController> _logger = logger;
     private readonly IHttpClientFactory _clientFactory = clientFactory;
 
     public async Task<IActionResult> Index()
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7195/api/v1/products");
+        // ***
+        var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7195/api/v1/discounts"); 
+        // ***
         var client = _clientFactory.CreateClient();
         var response = await client.SendAsync(request);
 
@@ -20,7 +22,7 @@ public class ProductController(ILogger<ProductController> logger, IHttpClientFac
             var jsonString = await response.Content.ReadAsStringAsync();
             var jObject = JObject.Parse(jsonString);
 
-            var productsArray = jObject["$values"]?.ToObject<List<Product>>();
+            var productsArray = jObject["$values"]?.ToObject<List<Discount>>();
 
             if (productsArray != null)
             {
@@ -48,7 +50,6 @@ public class ProductController(ILogger<ProductController> logger, IHttpClientFac
         try
         {
             var response = await client.SendAsync(request);
-
             if (response.IsSuccessStatusCode)
             {
                 var jsonString = await response.Content.ReadAsStringAsync();
@@ -76,10 +77,10 @@ public class ProductController(ILogger<ProductController> logger, IHttpClientFac
             return StatusCode(500);
         }
     }
-    
-    public class ProductResponse
+
+    public class DiscountResponse
     {
         [JsonProperty("$values")]
-        public List<Product> Products { get; set; }
+        public List<Discount> Discounts  { get; set; }
     }
 }

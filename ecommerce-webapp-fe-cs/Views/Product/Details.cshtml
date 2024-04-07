@@ -1,6 +1,9 @@
 ﻿@model ecommerce_webapp_fe_cs.Models.ProductModels.Product
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
 
-<div>
+<table>
     <h2>Product Details</h2>
     <div>
         <h3>@Model.ProName</h3>
@@ -9,4 +12,4 @@
         <p>Stock Quantity: @Model.StockQuantity</p>
         <p>Category: @Model.Category?.CategoryName</p>
     </div>
-</div>
+</table>
