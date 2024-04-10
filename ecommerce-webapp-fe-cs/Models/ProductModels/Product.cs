@@ -7,7 +7,9 @@ public class Product
     public decimal Price { get; set; }
     public int StockQuantity { get; set; }
     public int CategoryId { get; set; }
-    public string Image { get; set; }
+    public string Image1 { get; set; }
+    public string? Image2 { get; set; }
+    public string? Image3 {  get; set; }
 
     public Category Category { get; set; }
 }
