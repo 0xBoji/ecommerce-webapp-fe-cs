@@ -1,5 +1,9 @@
 ﻿@model ecommerce_webapp_fe_cs.Models.AccountModels.ProfileModel
 
+@{
+    Layout = "_LayoutStore";
+}
+
 <div class="profile-container">
     <h1>User Profile</h1>
     <div>
@@ -16,5 +20,5 @@
     <form asp-action="Logout" asp-controller="Account" method="post">
         <button type="submit" class="btn btn-danger">Logout</button>
     </form>
-    <a asp-controller="Account" asp-action="ProfileEdit">Edit</a>
+    <a asp-controller="Account" asp-action="ProfileEdit" class="btn btn-danger">Edit</a>
 </div>

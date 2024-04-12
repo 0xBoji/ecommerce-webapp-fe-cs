@@ -4,16 +4,10 @@ using Newtonsoft.Json.Linq;
 using ecommerce_webapp_fe_cs.Models.ProductModels;
 
 namespace ecommerce_webapp_fe_cs.Controllers;
-public class ProductController : Controller
+public class ProductController(ILogger<ProductController> logger, IHttpClientFactory clientFactory) : Controller
 {
-    private readonly ILogger<ProductController> _logger;
-    private readonly IHttpClientFactory _clientFactory;
-
-    public ProductController(ILogger<ProductController> logger, IHttpClientFactory clientFactory)
-    {
-        _logger = logger;
-        _clientFactory = clientFactory;
-    }
+    private readonly ILogger<ProductController> _logger = logger;
+    private readonly IHttpClientFactory _clientFactory = clientFactory;
 
     public async Task<IActionResult> Index()
     {
@@ -47,7 +41,7 @@ public class ProductController : Controller
 
     public async Task<IActionResult> Details(string id)
     {
-        var requestUrl = $"https://localhost:7195/api/v1/products/{id}"; 
+        var requestUrl = $"https://localhost:7195/api/v1/products/{id}";
         var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
         var client = _clientFactory.CreateClient();
 
@@ -82,10 +76,10 @@ public class ProductController : Controller
             return StatusCode(500);
         }
     }
+    
     public class ProductResponse
     {
         [JsonProperty("$values")]
         public List<Product> Products { get; set; }
     }
-
 }
