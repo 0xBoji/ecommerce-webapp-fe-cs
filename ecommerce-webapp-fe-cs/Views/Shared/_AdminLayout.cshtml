@@ -25,7 +25,7 @@
 
     <!-- Main wrapper -->
     <div id="main-wrapper">
-        @if (Context.Session.GetString("Is_Admin") == "True")
+        @if (Context.Session.GetString("UserEmail") == "True")
         {
             <!-- Nav header -->
             <div class="nav-header">
@@ -73,8 +73,13 @@
                                 <i class="icon icon-single-04"></i><span class="nav-text">Dashboard</span>
                             </a>
                             <ul aria-expanded="false">
-                                <li><a href="@Url.Action("", "")">Products</a></li>
-                                <li><a href="@Url.Action("", "")">Categories</a></li>
+                                <li><a href="@Url.Action("ShowProduct", "Admin")">Products</a></li>
+                                <li><a href="@Url.Action("Index", "Category")">Categories</a></li>
+                                <li><a href="@Url.Action("Index", "Discount")">Discounts</a></li>
+                                <li><a href="@Url.Action("Index", "Voucher")">Vouchers</a></li>
+                                <li><a href="@Url.Action("Index", "Order")">Order</a></li>
+                                <li><a href="@Url.Action("Index", "Refund")">Refund</a></li>
+                                <li><a href="@Url.Action("Index", "Return")">Return Request</a></li>
                             </ul>
                         </li>
 
@@ -87,7 +92,7 @@
                                 <li>
                                     @if (string.IsNullOrEmpty(Context.Session.GetString("UserEmail")))
                                     {
-                                        <a class="genric-btn info circle" asp-controller="Admin" asp-action="LoginAdmin">Login</a>
+                                        <a class="genric-btn info circle" asp-controller="Admin" asp-action="Login">Login</a>
                                     }
                                     else
                                     {
@@ -108,31 +113,14 @@
                 You must be an admin and logged in to view this content.
             </div>
             <!-- Provide a link or button to go to the login page -->
-            <a class="btn btn-primary" style="margin: 250px 0 0 700px;" href="@Url.Action("LoginAdmin", "Admin")">Go to Login Page</a>
-
+            <a class="btn btn-primary" style="margin: 250px 0 0 700px;" href="@Url.Action("Login", "Admin")">Go to Login Page</a>
         }
-        <!-- Content -->
-        <div class="content-body">
-            <div class="container-fluid">
-                <div class="row page-titles mx-0">
-                    <div class="col-sm-12 p-md-0">
-                        <div class="welcome-text">
-                            <h4>Welcome back!</h4>
-                            <p class="mb-0">Have a nice day!</p>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    @RenderBody()
-                </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                    </div>
-                </div>
 
-            </div>
+        <div>
+            @RenderBody()
         </div>
 
+<<<<<<< HEAD
         <!-- Footer -->
         <footer>
             <div class="copyright">
@@ -143,6 +131,8 @@
         {
             @RenderSection("Scripts", required: false)
         }
+=======
+>>>>>>> 3e0d05037e7ffb095b1170c97282313bdbb821b2
     </div>
 
     <!-- Scripts -->
@@ -157,3 +147,4 @@
 
 </body>
 </html>
+

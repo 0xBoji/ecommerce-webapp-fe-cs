@@ -6,6 +6,10 @@
 <h2>Product Details</h2>
 <h4>@Model.ProId</h4>
 
+@{
+    Layout = "~/Views/Shared/_LayoutStore.cshtml";
+}
+
 <div>
     <h4>@Model.ProName</h4>
     <p>Description: @Model.Description</p>
