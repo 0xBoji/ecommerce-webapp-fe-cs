@@ -12,9 +12,6 @@
             <img src="~/Images/@Model.UserImg" alt="User Image" style="max-width: 150px; max-height: 150px;" />
         }
     </div>
-    <!-- Logout Button -->
-    <form asp-action="Logout" asp-controller="Account" method="post">
-        <button type="submit" class="btn btn-danger">Logout</button>
-    </form>
+
     <a asp-controller="Account" asp-action="ProfileEdit">Edit</a>
 </div>

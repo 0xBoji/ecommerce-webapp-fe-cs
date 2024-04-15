@@ -139,6 +139,10 @@
                 <p>Copyright © Designed &amp; Developed by Quixkit</p>
             </div>
         </footer>
+        @if (IsSectionDefined("Scripts"))
+        {
+            @RenderSection("Scripts", required: false)
+        }
     </div>
 
     <!-- Scripts -->

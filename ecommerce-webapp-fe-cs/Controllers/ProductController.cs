@@ -14,40 +14,13 @@ public class ProductController : Controller
         _logger = logger;
         _clientFactory = clientFactory;
     }
-
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7195/api/v1/products");
-        var client = _clientFactory.CreateClient();
-        var response = await client.SendAsync(request);
-
-        if (response.IsSuccessStatusCode)
-        {
-            var jsonString = await response.Content.ReadAsStringAsync();
-            var jObject = JObject.Parse(jsonString);
-
-            var productsArray = jObject["$values"]?.ToObject<List<Product>>();
-
-            if (productsArray != null)
-            {
-                return View(productsArray);
-            }
-            else
-            {
-                _logger.LogError("Failed to extract products from JSON.");
-                return View(new List<Product>());
-            }
-        }
-        else
-        {
-            _logger.LogError("Failed to fetch products. Status code: {StatusCode}", response.StatusCode);
-            return View(new List<Product>());
-        }
+        return View();
     }
-
     public async Task<IActionResult> Details(string id)
     {
-        var requestUrl = $"https://localhost:7195/api/v1/products/{id}"; 
+        var requestUrl = $"https://localhost:7195/api/v1/products/{id}";
         var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
         var client = _clientFactory.CreateClient();
 
@@ -81,6 +54,11 @@ public class ProductController : Controller
             _logger.LogError(ex, "An error occurred while fetching product details.");
             return StatusCode(500);
         }
+    }
+    [HttpGet("cart-list")]
+    public IActionResult Cart()
+    {
+        return View();
     }
     public class ProductResponse
     {

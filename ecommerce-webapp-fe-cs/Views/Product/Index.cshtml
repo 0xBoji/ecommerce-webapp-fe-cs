@@ -1,10 +1,49 @@
-﻿@model IEnumerable<ecommerce_webapp_fe_cs.Models.ProductModels.Product>
+﻿@model ecommerce_webapp_fe_cs.Models.AdminModels.ProductAdmin;
 
-@foreach (var product in Model)
-{
-    <div>
-        <h2>@product.ProName</h2>
-        <p>@product.Description - Price: @product.Price</p>
-        <a asp-controller="Product" asp-action="Details" asp-route-id="@product.ProId">View Details</a>
-    </div>
+<table id="productsTable" class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        function loadProducts() {
+            $.ajax({
+                url: 'https://localhost:7195/api/v1/products',
+                type: 'GET',
+                success: function (response) {
+                    var products = response.$values;
+                    $('#productsTable tbody').empty();
+                    $.each(products, function (i, product) {
+                        var row = $('<tr/>');
+                        var nameLink = $('<a/>')
+                            .attr('href', '/Product/Details/' + product.proId)
+                            .text(product.proName);
+                        row.append($('<td/>').append(nameLink));
+                        row.append($('<td/>').text(product.description));
+                        row.append($('<td/>').text(product.price));
+
+                        $('#productsTable tbody').append(row);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching products:", error);
+                }
+            });
+        }
+
+        loadProducts();
+    </script>
+
 }

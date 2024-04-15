@@ -9,7 +9,7 @@ public class AccountController : Controller
 {
     private readonly IHttpClientFactory _clientFactory;
 
-    public accountController(IHttpClientFactory clientFactory)
+    public AccountController(IHttpClientFactory clientFactory)
     {
         _clientFactory = clientFactory;
     }
@@ -45,7 +45,6 @@ public class AccountController : Controller
 
     public IActionResult GoogleLoginCallback(string token)
     {
-        // Store the token in a secure, HTTP-only cookie
         var cookieOptions = new CookieOptions
         {
             HttpOnly = true,
@@ -54,7 +53,6 @@ public class AccountController : Controller
         };
         Response.Cookies.Append("JWTToken", token, cookieOptions);
 
-        // Redirect to remove the token from the URL for security
         return RedirectToAction("Profile");
     }
 
@@ -91,15 +89,12 @@ public class AccountController : Controller
     {
         ProfileModel profileModel = null;
 
-        // Try to get user email from session (regular login)
         var userEmail = HttpContext.Session.GetString("UserEmail");
 
-        // Prepare HttpClient for the request
         var client = _clientFactory.CreateClient();
 
         if (!string.IsNullOrEmpty(userEmail))
         {
-            // If email exists, fetch profile using email
             var response = await client.GetAsync($"https://localhost:7195/api/v1/accounts/profile?email={userEmail}");
             if (response.IsSuccessStatusCode)
             {

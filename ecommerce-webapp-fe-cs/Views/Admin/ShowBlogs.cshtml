@@ -1,0 +1,66 @@
+﻿
+<table id="blogsTable" class="table">
+    <thead>
+        <tr>
+            <th>title</th>
+            <th>postImg</th>
+            <th>content</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            // Function to load blogs from the API
+            function loadBlogs() {
+                $.ajax({
+                    url: 'https://localhost:7195/api/v1/blogs', // Change to your actual API URL
+                    type: 'GET',
+                    dataType: 'json', // expecting JSON data
+                    success: function (response) {
+                        var blogs = response.$values;
+                        $('#blogsTable tbody').empty(); // Clear the table body
+
+                        $.each(blogs, function (i, blog) {
+                            var row = $('<tr/>');
+                            row.append($('<td/>').text(blog.title));
+                            row.append($('<td/>').text(blog.postImg));
+                            row.append($('<td/>').text(blog.content));
+                            row.append($('<td/>').text(new Date(blog.postedDate).toLocaleDateString())); // Formatting date
+                            row.append(
+                                $('<td/>').html('<button class="btn btn-primary edit-blog-btn" data-id="' + blog.postId + '">Edit</button>' +
+                                    ' <button class="btn btn-danger delete-blog-btn" data-id="' + blog.postId + '">Delete</button>')
+                            );
+                            $('#blogsTable tbody').append(row);
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error fetching blogs:", error);
+                    }
+                });
+            }
+
+            loadBlogs(); // Load blogs when document is ready
+
+            // Bind click event to the edit button dynamically
+            $(document).on('click', '.edit-blog-btn', function () {
+                var postId = $(this).data('id');
+                console.log('Edit Post ID:', postId);
+                // Further actions can be taken to edit the post
+            });
+
+            // Bind click event to the delete button dynamically
+            $(document).on('click', '.delete-blog-btn', function () {
+                var postId = $(this).data('id');
+                console.log('Delete Post ID:', postId);
+                // Further actions can be taken to delete the post
+            });
+
+        });
+    </script>
+}

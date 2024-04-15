@@ -1,0 +1,76 @@
+﻿
+@{
+    ViewData["Title"] = "ShowNegotiations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <h2>negoTable</h2>
+    <table id="negoTable" class="table">
+        <thead>
+            <tr>
+                <th>negotiateID</th>
+                <th>proId</th>
+                <th>negotiatedPrice</th>
+                <th>status</th>
+                <th>action</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            fetchNegotiations();
+        });
+
+        function fetchNegotiations() {
+            $.ajax({
+                url: 'https://localhost:7195/api/v1/productOrder/all-negotiations',
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    var negotiations = response.$values;
+                    $('#negoTable tbody').empty();
+
+                    $.each(negotiations, function (index, item) {
+                        var row = $('<tr>').append(
+                            $('<td>').text(item.negotiationId),
+                            $('<td>').text(item.proId),
+                            $('<td>').text(`$${item.negotiatedPrice.toFixed(2)}`),
+                            $('<td>').text(item.status),
+                            $('<td>').append(
+                                $('<button>', {
+                                    text: 'Accept',
+                                    class: 'btn btn-success',
+                                    click: function () { acceptNegotiation(item.negotiationId); }
+                                }).prop('disabled', item.status === 'Accepted')
+                            )
+                        );
+                        $('#negoTable tbody').append(row);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching negotiations:", error);
+                }
+            });
+        }
+
+        function acceptNegotiation(negotiationId) {
+            $.ajax({
+                url: `https://localhost:7195/api/v1/productOrder/accept-negotiation/${negotiationId}`,
+                type: 'POST',
+                success: function (response) {
+                    alert(response.Message);
+                    fetchNegotiations(); // Refresh the list to show updated statuses
+                },
+                error: function (xhr) {
+                    alert("Error accepting negotiation: " + xhr.responseText);
+                }
+            });
+        }
+    </script>
+}

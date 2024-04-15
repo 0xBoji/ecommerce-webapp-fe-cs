@@ -1,79 +1,78 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ecommerce_webapp_fe_cs.Models.AccountModels;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Text;
+using ecommerce_webapp_fe_cs.Models.AdminModels;
 
 namespace ecommerce_webapp_fe_cs.Controllers;
+[Route("[controller]")]
 public class AdminController : Controller
 {
+    private readonly IHttpClientFactory _clientFactory;
+
+    public AdminController(IHttpClientFactory clientFactory)
+    {
+        _clientFactory = clientFactory;
+    }
     public IActionResult Index()
     {
         return View();
     }
+    [HttpGet("login-admin")]
+    public IActionResult LoginAdmin()
+    {
+        return View();
+    }
 
-    //[HttpPost]
-    //public async Task<IActionResult> LoginAdmin()
-    //{
-    //    if (ModelState.IsValid)
-    //    {
-    //        try
-    //        {
-    //            using (NgoManagementContext context = new NgoManagementContext())
-    //            {
-    //                var user = await context.Users
-    //                    .FirstOrDefaultAsync(u => u.Email == model.Email);
+    [HttpPost("login-admin")]
+    public async Task<IActionResult> LoginAdmin(LoginModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            var client = _clientFactory.CreateClient();
+            var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+            var response = await client.PostAsync("https://localhost:7195/api/v1/accounts/login-admin", content); 
 
-    //                if (user != null)
-    //                {
-    //                    if (BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
-    //                    {
-    //                        if (user.IsAdmin)
-    //                        {
-    //                            HttpContext.Session.SetString("UserID", user.UserId.ToString());
-    //                            HttpContext.Session.SetString("Is_Admin", user.IsAdmin.ToString());
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index", "Admin"); 
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Login failed. Please check your credentials and try again.");
+            }
+        }
+        return View(model);
+    }
 
-    //                            return RedirectToAction("Index"); // Redirect to the admin dashboard
-    //                        }
-    //                        else
-    //                        {
-    //                            // User is not an admin
-    //                            throw new UnauthorizedAccessException("You do not have admin privileges.");
-    //                        }
-    //                    }
-    //                    else
-    //                    {
-    //                        // Password is incorrect
-    //                        throw new ArgumentException("Invalid login attempt.");
-    //                    }
-    //                }
-    //                else
-    //                {
-    //                    // Email does not exist
-    //                    throw new ArgumentException("Invalid login attempt.");
-    //                }
-    //            }
-    //        }
-    //        catch (Exception ex)
-    //        {
-    //            ModelState.AddModelError(string.Empty, ex.Message);
-    //            return View(model);
-    //        }
-    //    }
-    //    return View(model);
-    //}
-
-    //[HttpPost]
-    //public IActionResult Logout()
-    //{
-    //	HttpContext.Session.Clear();
-    //	return RedirectToAction("LoginAdmin", "Admin");
-    //}
+    [HttpGet("product-list")]
+    public IActionResult ShowList()
+    {
+        return View();
+    }
 
 
-    //public IActionResult Dashboard()
-    //{
-    //	if (HttpContext.Session.GetString("") != "True")
-    //	{
-    //		return RedirectToAction("LoginAdmin"); // Redirect non-admin users to the login page
-    //	}
+    [HttpGet("blog-list")]
+    public IActionResult ShowBlogs()
+    {
+        return View();
+    }
 
-    //	return View(); // Return the Dashboard view for admin users
-    //}
+
+    [HttpGet("nego-list")]
+    public IActionResult ShowNegotiations()
+    {
+        return View();
+    }
+
+
+
+    [HttpPost]
+    public IActionResult Logout()
+    {
+        HttpContext.Session.Clear(); 
+        Response.Cookies.Delete("JWTToken");
+        return RedirectToAction("Login"); 
+    }
+
 }
