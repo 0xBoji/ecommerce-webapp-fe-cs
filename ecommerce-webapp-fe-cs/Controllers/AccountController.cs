@@ -155,14 +155,8 @@ public class AccountController(IHttpClientFactory clientFactory) : Controller
 
     public async Task<IActionResult> ProfileEdit()
     {
-        var userEmail = HttpContext.Session.GetString("UserEmail");
-        if (string.IsNullOrEmpty(userEmail))
-        {
-            return Unauthorized("User is not authenticated.");
-        }
-
         var client = _clientFactory.CreateClient();
-        var response = await client.GetAsync($"https://localhost:7195/api/v1/accounts/profile?email={userEmail}");
+        var response = await client.GetAsync($"https://localhost:7195/api/v1/accounts/profile/edit");
 
         if (response.IsSuccessStatusCode)
         {
@@ -179,36 +173,34 @@ public class AccountController(IHttpClientFactory clientFactory) : Controller
     [HttpPost]
     public async Task<IActionResult> ProfileEdit(ProfileEditModel model, IFormFile file)
     {
-        //check if login or not
-        var userEmail = HttpContext.Session.GetString("UserEmail");
-        if (string.IsNullOrEmpty(userEmail))
-        {
-            return Unauthorized("User is not authenticated.");
-        }
-
         if (file != null && file.Length > 0)
         {
             var filename = $"{DateTime.Now.Ticks}_{file.FileName}";
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", filename);
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-            model.UserImg = filename;
-        }
+			using (var stream = new FileStream(filePath, FileMode.Create))
+			{
+				await file.CopyToAsync(stream);
+			}
+			model.UserImg = filename;
 
-        var client = _clientFactory.CreateClient();
-        var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
-        var response = await client.PutAsync($"https://localhost:7195/api/v1/accounts/profile/edit?email={userEmail}", content);
+			var client = _clientFactory.CreateClient();
+			var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+			var response = await client.PostAsync($"https://localhost:7195/api/v1/accounts/profile/edit", content);
 
-        if (response.IsSuccessStatusCode)
-        {
-            return RedirectToAction("Profile", "Account");
-        }
-        else
-        {
-            ModelState.AddModelError(string.Empty, "Edit failed.");
-        }
+			if (response.IsSuccessStatusCode)
+			{
+				return RedirectToAction("Profile", "Account");
+			}
+			else
+			{
+				if (System.IO.File.Exists(filePath))
+				{
+					System.IO.File.Delete(filePath);
+				}
+				ModelState.AddModelError(string.Empty, "Edit failed.");
+			}
+		}
+
         return View(model);
     }
 }
