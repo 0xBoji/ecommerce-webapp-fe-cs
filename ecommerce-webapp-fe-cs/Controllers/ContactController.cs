@@ -7,6 +7,6 @@ namespace ecommerce_webapp_fe_cs.Controllers;
 public class ContactController(IHttpClientFactory clientFactory) : Controller
 {
     private readonly IHttpClientFactory _clientFactory = clientFactory;
-    public IActionResult Contact() => View();
+    public IActionResult Index() => View();
 
 }
