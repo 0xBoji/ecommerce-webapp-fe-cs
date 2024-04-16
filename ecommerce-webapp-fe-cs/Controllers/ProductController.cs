@@ -6,22 +6,10 @@ using ecommerce_webapp_fe_cs.Models.ProductModels;
 namespace ecommerce_webapp_fe_cs.Controllers;
 public class ProductController(ILogger<ProductController> logger, IHttpClientFactory clientFactory) : Controller
 {
-<<<<<<< HEAD
     private readonly ILogger<ProductController> _logger;
     private readonly IHttpClientFactory _clientFactory;
 
-    public ProductController(ILogger<ProductController> logger, IHttpClientFactory clientFactory)
-    {
-        _logger = logger;
-        _clientFactory = clientFactory;
-    }
-    public IActionResult Index()
-=======
-    private readonly ILogger<ProductController> _logger = logger;
-    private readonly IHttpClientFactory _clientFactory = clientFactory;
-
     public async Task<IActionResult> Index()
->>>>>>> 3e0d05037e7ffb095b1170c97282313bdbb821b2
     {
         return View();
     }
@@ -62,15 +50,11 @@ public class ProductController(ILogger<ProductController> logger, IHttpClientFac
             return StatusCode(500);
         }
     }
-<<<<<<< HEAD
     [HttpGet("cart-list")]
     public IActionResult Cart()
     {
         return View();
     }
-=======
-    
->>>>>>> 3e0d05037e7ffb095b1170c97282313bdbb821b2
     public class ProductResponse
     {
         [JsonProperty("$values")]

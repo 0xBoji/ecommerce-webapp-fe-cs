@@ -9,13 +9,6 @@ public class AccountController(IHttpClientFactory clientFactory) : Controller
 {
     private readonly IHttpClientFactory _clientFactory = clientFactory;
 
-<<<<<<< HEAD
-    public AccountController(IHttpClientFactory clientFactory)
-    {
-        _clientFactory = clientFactory;
-    }
-=======
->>>>>>> 3e0d05037e7ffb095b1170c97282313bdbb821b2
     public IActionResult SignUp()
     {
         return View();
