@@ -1,4 +1,22 @@
 ﻿using ecommerce_webapp_fe_cs.Models.AccountModels;
+<<<<<<< HEAD
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Text;
+using ecommerce_webapp_fe_cs.Models.AdminModels;
+
+namespace ecommerce_webapp_fe_cs.Controllers;
+[Route("[controller]")]
+public class AdminController : Controller
+{
+    private readonly IHttpClientFactory _clientFactory;
+
+    public AdminController(IHttpClientFactory clientFactory)
+    {
+        _clientFactory = clientFactory;
+    }
+    public IActionResult Index()
+=======
 using ecommerce_webapp_fe_cs.Models.ProductModels;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -15,6 +33,7 @@ public class AdminController(ILogger<ProductController> logger, IHttpClientFacto
 
     public IActionResult Index() => View();
     public async Task<IActionResult> Dashboard()
+>>>>>>> 3e0d05037e7ffb095b1170c97282313bdbb821b2
     {
         var userEmail = HttpContext.Session.GetString("UserEmail");
         if (string.IsNullOrEmpty(userEmail)) return RedirectToAction("");
@@ -35,7 +54,66 @@ public class AdminController(ILogger<ProductController> logger, IHttpClientFacto
             return NotFound("Profile not found.");
         }   
     }
+    [HttpGet("login-admin")]
+    public IActionResult LoginAdmin()
+    {
+        return View();
+    }
 
+<<<<<<< HEAD
+    [HttpPost("login-admin")]
+    public async Task<IActionResult> LoginAdmin(LoginModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            var client = _clientFactory.CreateClient();
+            var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
+            var response = await client.PostAsync("https://localhost:7195/api/v1/accounts/login-admin", content); 
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index", "Admin"); 
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Login failed. Please check your credentials and try again.");
+            }
+        }
+        return View(model);
+    }
+
+    [HttpGet("product-list")]
+    public IActionResult ShowList()
+    {
+        return View();
+    }
+
+
+    [HttpGet("blog-list")]
+    public IActionResult ShowBlogs()
+    {
+        return View();
+    }
+
+
+    [HttpGet("nego-list")]
+    public IActionResult ShowNegotiations()
+    {
+        return View();
+    }
+
+
+
+    [HttpPost]
+    public IActionResult Logout()
+    {
+        HttpContext.Session.Clear(); 
+        Response.Cookies.Delete("JWTToken");
+        return RedirectToAction("Login"); 
+    }
+
+}
+=======
     public IActionResult Login() => View();
 
     [HttpPost]
@@ -141,3 +219,4 @@ public class AdminController(ILogger<ProductController> logger, IHttpClientFacto
         return View(model);
     }
 }
+>>>>>>> 3e0d05037e7ffb095b1170c97282313bdbb821b2

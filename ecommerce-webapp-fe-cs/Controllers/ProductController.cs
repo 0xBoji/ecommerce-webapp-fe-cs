@@ -6,39 +6,25 @@ using ecommerce_webapp_fe_cs.Models.ProductModels;
 namespace ecommerce_webapp_fe_cs.Controllers;
 public class ProductController(ILogger<ProductController> logger, IHttpClientFactory clientFactory) : Controller
 {
+<<<<<<< HEAD
+    private readonly ILogger<ProductController> _logger;
+    private readonly IHttpClientFactory _clientFactory;
+
+    public ProductController(ILogger<ProductController> logger, IHttpClientFactory clientFactory)
+    {
+        _logger = logger;
+        _clientFactory = clientFactory;
+    }
+    public IActionResult Index()
+=======
     private readonly ILogger<ProductController> _logger = logger;
     private readonly IHttpClientFactory _clientFactory = clientFactory;
 
     public async Task<IActionResult> Index()
+>>>>>>> 3e0d05037e7ffb095b1170c97282313bdbb821b2
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7195/api/v1/products");
-        var client = _clientFactory.CreateClient();
-        var response = await client.SendAsync(request);
-
-        if (response.IsSuccessStatusCode)
-        {
-            var jsonString = await response.Content.ReadAsStringAsync();
-            var jObject = JObject.Parse(jsonString);
-
-            var productsArray = jObject["$values"]?.ToObject<List<Product>>();
-
-            if (productsArray != null)
-            {
-                return View(productsArray);
-            }
-            else
-            {
-                _logger.LogError("Failed to extract products from JSON.");
-                return View(new List<Product>());
-            }
-        }
-        else
-        {
-            _logger.LogError("Failed to fetch products. Status code: {StatusCode}", response.StatusCode);
-            return View(new List<Product>());
-        }
+        return View();
     }
-
     public async Task<IActionResult> Details(string id)
     {
         var requestUrl = $"https://localhost:7195/api/v1/products/{id}";
@@ -76,7 +62,15 @@ public class ProductController(ILogger<ProductController> logger, IHttpClientFac
             return StatusCode(500);
         }
     }
+<<<<<<< HEAD
+    [HttpGet("cart-list")]
+    public IActionResult Cart()
+    {
+        return View();
+    }
+=======
     
+>>>>>>> 3e0d05037e7ffb095b1170c97282313bdbb821b2
     public class ProductResponse
     {
         [JsonProperty("$values")]
