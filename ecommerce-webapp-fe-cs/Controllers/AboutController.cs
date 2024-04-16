@@ -7,6 +7,6 @@ public class AboutController(IHttpClientFactory clientFactory) : Controller
 {
     private readonly IHttpClientFactory _clientFactory = clientFactory;
 
-    public IActionResult About() => View();
+    public IActionResult Index() => View();
 
 }
