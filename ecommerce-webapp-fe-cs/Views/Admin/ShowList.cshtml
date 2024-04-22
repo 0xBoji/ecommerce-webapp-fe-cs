@@ -1,0 +1,252 @@
+﻿@model ecommerce_webapp_fe_cs.Models.AdminModels.ProductAdmin;
+<button type="button" class="btn btn-success" data-toggle="modal" data-target="#uploadExcelModal">Upload Products via Excel</button>
+    
+<button type="button" class="btn btn-success" data-toggle="modal" data-target="#createProductModal">Add New Product</button>
+<button type="button" id="exportExcel" class="btn btn-primary">Export Products to Excel</button>
+
+<table id="productsTable" class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<div id="createProductModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create New Product</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="createProductForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label>Product Name</label>
+                        <input type="text" class="form-control" name="ProName">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea class="form-control" name="Description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Price</label>
+                        <input type="number" class="form-control" name="Price">
+                    </div>
+                    <div class="form-group">
+                        <label>Stock Quantity</label>
+                        <input type="number" class="form-control" name="StockQuantity">
+                    </div>
+                    <div class="form-group">
+                        <label>Product Image 1</label>
+                        <input type="file" class="form-control-file" name="ProImg1">
+                    </div>
+                    <div class="form-group">
+                        <label>Product Image 2</label>
+                        <input type="file" class="form-control-file" name="ProImg2">
+                    </div>
+                    <div class="form-group">
+                        <label>Product Image 3</label>
+                        <input type="file" class="form-control-file" name="ProImg3">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="saveCreate">Create Product</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="editProductModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Product</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editProductForm">
+                    <input type="hidden" id="editProductId">
+                    <div class="form-group">
+                        <label for="editProName">Name</label>
+                        <input type="text" class="form-control" id="editProName">
+                    </div>
+                    <div class="form-group">
+                        <label for="editDescription">Description</label>
+                        <textarea class="form-control" id="editDescription"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPrice">Price</label>
+                        <input type="number" class="form-control" id="editPrice">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="saveEdit">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="uploadExcelModal" tabindex="-1" role="dialog" aria-labelledby="uploadExcelModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadExcelModalLabel">Upload Products via Excel</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="uploadExcelForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="excelFile">Choose Excel File</label>
+                        <input type="file" class="form-control-file" id="excelFile" name="file" accept=".xlsx">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="uploadExcel">Upload</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#exportExcel').click(function () {
+                window.location = 'https://localhost:7195/api/v1/products/export'; // Directly navigate to the export URL
+            });
+            $('#uploadExcel').click(function () {
+                var formData = new FormData($('#uploadExcelForm')[0]);
+
+                $.ajax({
+                    url: 'https://localhost:7195/api/v1/products/upload',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        alert('Products uploaded successfully!');
+                        $('#uploadExcelModal').modal('hide');
+                    },
+                    error: function (xhr) {
+                        console.error("Error uploading file:", xhr.responseText);
+                        alert('Failed to upload products. Please check the file format and data.');
+                    }
+                });
+            });
+            $('#saveCreate').click(function () {
+                var formData = new FormData($('#createProductForm')[0]);
+
+                $.ajax({
+                    url: 'https://localhost:7195/api/v1/products',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        $('#createProductModal').modal('hide');
+                        loadProducts();  // Reload the products list
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error creating product:", error);
+                    }
+                });
+            });
+            function loadProducts() {
+                $.ajax({
+                    url: 'https://localhost:7195/api/v1/products',
+                    type: 'GET',
+                    success: function (response) {
+                        var products = response.$values;
+                        $('#productsTable tbody').empty();
+                        $.each(products, function (i, product) {
+                            var row = $('<tr/>');
+                            row.append($('<td/>').text(product.proName));
+                            row.append($('<td/>').text(product.description));
+                            row.append($('<td/>').text(product.price));
+                            row.append(
+                                $('<td/>').html('<button class="btn btn-primary edit-product-btn" data-id="' + product.proId + '" data-toggle="modal" data-target="#editProductModal">Edit</button>' +
+                                    ' <button class="btn btn-danger delete-product-btn" data-id="' + product.proId + '">Delete</button>')
+                            );
+                            $('#productsTable tbody').append(row);
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error fetching products:", error);
+                    }
+                });
+            }
+
+            loadProducts();
+
+            $(document).on('click', '.delete-product-btn', function () {
+                var id = $(this).data('id');
+                $.ajax({
+                    url: 'https://localhost:7195/api/v1/products/' + id,
+                    type: 'DELETE',
+                    success: function (result) {
+                        loadProducts();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error deleting product:", error);
+                    }
+                });
+            });
+
+            $('#editProductModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var id = button.data('id');
+                var modal = $(this);
+                $.ajax({
+                    url: 'https://localhost:7195/api/v1/products/' + id,
+                    type: 'GET',
+                    success: function (product) {
+                        modal.find('#editProductId').val(product.proId);
+                        modal.find('#editProName').val(product.proName);
+                        modal.find('#editDescription').val(product.description);
+                        modal.find('#editPrice').val(product.price);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error fetching product details:", error);
+                    }
+                });
+            });
+
+            $('#saveEdit').click(function () {
+                var id = $('#editProductId').val();
+                var productData = {
+                    proName: $('#editProName').val(),
+                    description: $('#editDescription').val(),
+                    price: parseFloat($('#editPrice').val())
+                };
+                $.ajax({
+                    url: 'https://localhost:7195/api/v1/products/' + id,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(productData),
+                    success: function (result) {
+                        $('#editProductModal').modal('hide');
+                        loadProducts();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error updating product:", error);
+                    }
+                });
+            });
+        });
+    </script>
+}

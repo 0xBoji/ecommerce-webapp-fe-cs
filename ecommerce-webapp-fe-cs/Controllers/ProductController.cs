@@ -6,80 +6,60 @@ using ecommerce_webapp_fe_cs.Models.ProductModels;
 namespace ecommerce_webapp_fe_cs.Controllers;
 public class ProductController(ILogger<ProductController> logger, IHttpClientFactory clientFactory) : Controller
 {
-    private readonly ILogger<ProductController> _logger = logger;
-    private readonly IHttpClientFactory _clientFactory = clientFactory;
+	private readonly ILogger<ProductController> _logger;
+	private readonly IHttpClientFactory _clientFactory;
 
-    public async Task<IActionResult> Index()
-    {
-        var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7195/api/v1/products");
-        var client = _clientFactory.CreateClient();
-        var response = await client.SendAsync(request);
+	public ActionResult Index()
+	{
+		return View();
+	}
+	public async Task<IActionResult> Details(string id)
+	{
+		var requestUrl = $"https://localhost:7195/api/v1/products/{id}";
+		var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+		var client = _clientFactory.CreateClient();
 
-        if (response.IsSuccessStatusCode)
-        {
-            var jsonString = await response.Content.ReadAsStringAsync();
-            var jObject = JObject.Parse(jsonString);
+		try
+		{
+			var response = await client.SendAsync(request);
 
-            var productsArray = jObject["$values"]?.ToObject<List<Product>>();
+			if (response.IsSuccessStatusCode)
+			{
+				var jsonString = await response.Content.ReadAsStringAsync();
+				var product = JsonConvert.DeserializeObject<Product>(jsonString);
 
-            if (productsArray != null)
-            {
-                return View(productsArray);
-            }
-            else
-            {
-                _logger.LogError("Failed to extract products from JSON.");
-                return View(new List<Product>());
-            }
-        }
-        else
-        {
-            _logger.LogError("Failed to fetch products. Status code: {StatusCode}", response.StatusCode);
-            return View(new List<Product>());
-        }
-    }
+				if (product != null)
+				{
+					return View(product);
+				}
+				else
+				{
+					_logger.LogError("Failed to extract product details from JSON.");
+					return NotFound();
+				}
+			}
+			else
+			{
+				_logger.LogError("Failed to fetch product details. Status code: {StatusCode}", response.StatusCode);
+				return NotFound();
+			}
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "An error occurred while fetching product details.");
+			return StatusCode(500);
+		}
+	}
 
-    public async Task<IActionResult> Details(string id)
-    {
-        var requestUrl = $"https://localhost:7195/api/v1/products/{id}";
-        var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
-        var client = _clientFactory.CreateClient();
+	[HttpGet("cart-list")]
+	public IActionResult Cart()
+	{
+		return View();
+	}
 
-        try
-        {
-            var response = await client.SendAsync(request);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var jsonString = await response.Content.ReadAsStringAsync();
-                var product = JsonConvert.DeserializeObject<Product>(jsonString);
-
-                if (product != null)
-                {
-                    return View(product);
-                }
-                else
-                {
-                    _logger.LogError("Failed to extract product details from JSON.");
-                    return NotFound();
-                }
-            }
-            else
-            {
-                _logger.LogError("Failed to fetch product details. Status code: {StatusCode}", response.StatusCode);
-                return NotFound();
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An error occurred while fetching product details.");
-            return StatusCode(500);
-        }
-    }
-    
-    public class ProductResponse
-    {
-        [JsonProperty("$values")]
-        public List<Product> Products { get; set; }
-    }
+	public class ProductResponse
+	{
+		[JsonProperty("$values")]
+		public List<Product> Products { get; set; }
+	}
 }

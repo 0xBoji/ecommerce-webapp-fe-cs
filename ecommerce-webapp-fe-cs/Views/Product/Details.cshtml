@@ -1,16 +1,97 @@
 ﻿@model ecommerce_webapp_fe_cs.Models.ProductModels.Product
-
+@* @{
+    Layout = "_Layout";
+}
+<div id="userIdDisplay"></div>
+<h2>Product Details</h2>
+<h4>@Model.ProId</h4>
+ *@
 @{
     Layout = "_LayoutStore";
 }
 
 <div>
-    <h2>Product Details</h2>
+    <h4>@Model.ProName</h4>
+    <p>Description: @Model.Description</p>
+    <p>Price: @Model.Price</p>
+    <input type="number" id="quantity" name="quantity" value="1" min="1" />
+    <button id="addToCart" data-id="@Model.ProId">Add to Cart</button>
     <div>
-        <h3>@Model.ProName</h3>
-        <p>Description: @Model.Description</p>
-        <p>Price: @Model.Price</p>
-        <p>Stock Quantity: @Model.StockQuantity</p>
-        <p>Category: @Model.Category?.CategoryName</p>
+        <label for="negotiatedPrice">Your Price:</label>
+        <input type="number" id="negotiatedPrice" name="negotiatedPrice" min="1" placeholder="Enter your price" />
+        <button id="negotiatePrice" data-id="@Model.ProId">Negotiate Price</button>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#negotiatePrice').click(function () {
+                var proId = $(this).data('id'); // Get product ID from button data attribute
+                var negotiatedPrice = $('#negotiatedPrice').val(); // Get negotiated price from input
+
+                if (!proId) {
+                    alert("Error: Can't find product ID. Please refresh the page and try again.");
+                    return;
+                }
+
+                // Ensure a price has been entered
+                if (!negotiatedPrice || negotiatedPrice <= 0) {
+                    alert("Please enter a valid price.");
+                    return;
+                }
+                $.ajax({
+                    url: 'https://localhost:7195/api/v1/productOrder/negotiate', // Endpoint for negotiation
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ ProId: proId, NegotiatedPrice: parseFloat(negotiatedPrice) }), // Sending the product ID and the negotiated price
+                    success: function (response) {
+                        alert('Negotiation submitted successfully');
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error submitting negotiation:', error);
+                        alert('Error submitting negotiation. Please try again.');
+                    }
+                });
+            });
+
+            $('#addToCart').click(function () {
+                var proId = $(this).data('id');
+                var quantity = $('#quantity').val();
+                if (!proId) {
+                    alert("Error: Can't find product ID. Please refresh the page and try again.");
+                    return; 
+                }
+
+                $.ajax({
+                    url: 'https://localhost:7195/api/v1/productOrder/cart', // Update with your actual endpoint
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ ProId: proId, Quantity: parseInt(quantity) }),
+                    success: function (response) {
+                        alert('Product added to cart successfully');
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error adding product to cart:', error);
+                        alert('Error adding product to cart. Please try again.');
+                    }
+                });
+            });
+            function fetchUserId() {
+                $.ajax({
+                    url: 'https://localhost:7195/api/accounts/session/userId',  // Update with your actual BE endpoint
+                    type: 'GET',
+                    success: function (response) {
+                        console.log("User ID from session:", response.UserId);
+                        $('#userIdDisplay').text(`User ID: ${response.UserId}`);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error fetching user ID:', error);
+                    }
+                });
+            }
+            fetchUserId();
+        });
+    </script>
+}

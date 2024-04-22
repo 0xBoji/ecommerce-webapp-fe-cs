@@ -4,25 +4,6 @@
     Layout = "_LayoutStore";
 }
 
-@* <div class="profile-container">
-    <h1>User Profile</h1>
-    <div>
-        <p>Username: @Model.Username</p>
-        <p>First Name: @Model.FirstName</p>
-        <p>Last Name: @Model.LastName</p>
-        <p>Phone Number: @Model.PhoneNum</p>
-        @if (!string.IsNullOrEmpty(Model.UserImg))
-        {
-            <img src="~/Images/@Model.UserImg" alt="User Image" style="max-width: 150px; max-height: 150px;" />
-        }
-    </div>
-    <!-- Logout Button -->
-    <form asp-action="Logout" asp-controller="Account" method="post">
-        <button type="submit" class="btn btn-danger">Logout</button>
-    </form>
-    <a asp-controller="Account" asp-action="ProfileEdit" class="btn btn-danger">Edit</a>
-</div> *@
-
 <style type="text/css">
     body {
         margin-top: 20px;
@@ -113,7 +94,6 @@
                             <div class="mt-3">
                                 <h4>@Model.Username</h4>
                                 <a class="btn btn-outline-primary" href="@Url.Action("ProfileEdit", "Account")">Edit</a>
-                                @* <a asp-controller="Account" asp-action="ProfileEdit" class="btn btn-danger">Edit</a> *@
                             </div>
                         </div>
                     </div>

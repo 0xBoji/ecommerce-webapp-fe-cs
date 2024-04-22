@@ -1,0 +1,40 @@
+﻿@model IEnumerable<ecommerce_webapp_fe_cs.Models.ProductModels.CartItemModel>
+
+
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.ProName</td>
+                    <td>@item.Description</td>
+                    <td>@item.Price</td>
+                    <td>@item.Quantity</td>
+                    <td>@(item.Price * item.Quantity)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div>
+        <strong>Total: </strong> @Model.Sum(i => i.Price * i.Quantity)
+    </div>
+
+    <!-- Add Checkout Button Here -->
+    <a class="btn btn-primary" href="@Url.Action("Checkout", "ProductOrder")">Proceed to Checkout</a>
+}
+else
+{
+    <p>Your cart is empty.</p>
+}
