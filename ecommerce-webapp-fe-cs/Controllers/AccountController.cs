@@ -4,6 +4,8 @@ using Newtonsoft.Json;
 using ecommerce_webapp_fe_cs.Models;
 using Microsoft.AspNetCore.Http;
 using ecommerce_webapp_fe_cs.Models.AccountModels;
+using System.Security.Claims;
+using System.Net.Http;
 
 public class AccountController(IHttpClientFactory clientFactory) : Controller
 {
@@ -165,37 +167,50 @@ public class AccountController(IHttpClientFactory clientFactory) : Controller
         }
     }
 
-    [HttpPost]
-    public async Task<IActionResult> ProfileEdit(ProfileEditModel model, IFormFile file)
-    {
-        if (file != null && file.Length > 0)
-        {
-            var filename = $"{DateTime.Now.Ticks}_{file.FileName}";
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", filename);
-			using (var stream = new FileStream(filePath, FileMode.Create))
-			{
-				await file.CopyToAsync(stream);
-			}
-			model.UserImg = filename;
-
-			var client = _clientFactory.CreateClient();
-			var content = new StringContent(JsonConvert.SerializeObject(model), Encoding.UTF8, "application/json");
-			var response = await client.PostAsync($"https://localhost:7195/api/v1/accounts/profile/edit", content);
-
-			if (response.IsSuccessStatusCode)
-			{
-				return RedirectToAction("Profile", "Account");
-			}
-			else
-			{
-				if (System.IO.File.Exists(filePath))
-				{
-					System.IO.File.Delete(filePath);
-				}
-				ModelState.AddModelError(string.Empty, "Edit failed.");
-			}
+	[HttpPost]
+	public async Task<IActionResult> ProfileEdit(ProfileEditModel model, IFormFile file)
+	{
+		if (!ModelState.IsValid)
+		{
+			return View(model);
 		}
 
-        return View(model);
-    }
+		// Prepare HTTP client
+		var client = _clientFactory.CreateClient();
+		using var content = new MultipartFormDataContent();
+
+		// Add model data to the multipart form data content
+		content.Add(new StringContent(model.Username), nameof(model.Username));
+		content.Add(new StringContent(model.FirstName), nameof(model.FirstName));
+		content.Add(new StringContent(model.LastName), nameof(model.LastName));
+		content.Add(new StringContent(model.PhoneNum), nameof(model.PhoneNum));
+		content.Add(new StringContent(model.CompanyName ?? ""), nameof(model.CompanyName));
+		content.Add(new StringContent(model.AddressLine1 ?? ""), nameof(model.AddressLine1));
+		content.Add(new StringContent(model.Country ?? ""), nameof(model.Country));
+		content.Add(new StringContent(model.Province ?? ""), nameof(model.Province));
+		content.Add(new StringContent(model.City ?? ""), nameof(model.City));
+		content.Add(new StringContent(model.PostalCode ?? ""), nameof(model.PostalCode));
+
+		// Handle file upload
+		if (file != null && file.Length > 0)
+		{
+			var streamContent = new StreamContent(file.OpenReadStream());
+			streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+			content.Add(streamContent, "UserImg", file.FileName);
+		}
+
+		// Make the API call to update the profile
+		var response = await client.PutAsync("https://localhost:7195/api/v1/accounts/profile/edit", content);
+
+		if (response.IsSuccessStatusCode)
+		{
+			return RedirectToAction("Profile", "Account");
+		}
+		else
+		{
+			ModelState.AddModelError(string.Empty, "Profile update failed.");
+			return View(model);
+		}
+	}
+
 }

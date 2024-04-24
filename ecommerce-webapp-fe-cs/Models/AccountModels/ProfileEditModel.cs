@@ -6,7 +6,7 @@ public class ProfileEditModel
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
     public string PhoneNum { get; set; }
-    public string UserImg { get; set; }
+    public string UserImg { get; set; }  // Use IFormFile for handling file uploads
     public string? CompanyName { get; set; }
     public string? AddressLine1 { get; set; }
     public string? AddressLine2 { get; set; }

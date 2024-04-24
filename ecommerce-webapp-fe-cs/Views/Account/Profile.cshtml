@@ -11,19 +11,17 @@
         <p>First Name: @Model.FirstName</p>
         <p>Last Name: @Model.LastName</p>
         <p>Phone Number: @Model.PhoneNum</p>
+        <p>Address Line1: @Model.AddressLine1</p>
+
         @if (!string.IsNullOrEmpty(Model.UserImg))
         {
             <img src="~/Images/@Model.UserImg" alt="User Image" style="max-width: 150px; max-height: 150px;" />
         }
     </div>
-<<<<<<< HEAD
 
     <a asp-controller="Account" asp-action="ProfileEdit">Edit</a>
-=======
     <!-- Logout Button -->
     <form asp-action="Logout" asp-controller="Account" method="post">
         <button type="submit" class="btn btn-danger">Logout</button>
     </form>
-    <a asp-controller="Account" asp-action="ProfileEdit" class="btn btn-danger">Edit</a>
->>>>>>> 3e0d05037e7ffb095b1170c97282313bdbb821b2
 </div>

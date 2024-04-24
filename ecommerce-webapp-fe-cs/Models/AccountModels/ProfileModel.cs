@@ -6,5 +6,6 @@ public class ProfileModel
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string PhoneNum { get; set; }
-    public string UserImg { get; set; }
+	public string AddressLine1 { get; set; }
+	public string UserImg { get; set; }
 }
