@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ecommerce_webapp_fe_cs</title>
+    <title>Arts - Dashboard</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ecommerce_webapp_fe_cs.styles.css" asp-append-version="true" />
@@ -12,15 +12,20 @@
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
+            <div class="container">
                 @if (string.IsNullOrEmpty(Context.Session.GetString("UserEmail")))
                 {
-                    <a class="genric-btn info circle" asp-controller="Account" asp-action="Login">Login</a>
+                    <a style="text-decoration: none;" href="@Url.Action("LoginAdmin", "Admin")">Login</a>
                 }
                 else
                 {
-                    <form asp-controller="Account" asp-action="Logout" method="post">
-                        <button type="submit" class="btn btn-success info circle" style="margin:10px 0px 10px 42px; border:none; color:#878a9e; background-color:#353b5e;">Logout</button>
+                    <a style="text-decoration: none;" href="@Url.Action("Index", "Admin")">Index</a>
+                    <a style="text-decoration: none;" href="@Url.Action("ShowList", "Admin")">Products</a>
+                    <a style="text-decoration: none;" href="@Url.Action("ShowNegotiations", "Admin")">Negotiations</a>
+                    <a style="text-decoration: none;" href="@Url.Action("ShowBlogs", "Admin")">Blogs</a>
+
+                    <form asp-controller="Admin" asp-action="Logout" method="post">
+                        <button type="submit" class="btn btn-danger info circle" style="margin:10px 0px 10px 42px;">Logout</button>
                     </form>
                 }
             </div>
@@ -32,11 +37,6 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - ecommerce_webapp_fe_cs - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

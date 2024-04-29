@@ -128,7 +128,6 @@ public class AccountController(IHttpClientFactory clientFactory) : Controller
 	}
 
 
-
 	public IActionResult CaptureToken(string token)
 	{
 		if (!string.IsNullOrEmpty(token))
@@ -141,7 +140,6 @@ public class AccountController(IHttpClientFactory clientFactory) : Controller
 	}
 
 
-
 	[HttpPost]
 	public IActionResult Logout()
 	{
@@ -149,6 +147,7 @@ public class AccountController(IHttpClientFactory clientFactory) : Controller
 		Response.Cookies.Delete("JWTToken"); // Clears the JWT token cookie
 		return RedirectToAction("Login"); // Redirects to the login page
 	}
+
 
 	public async Task<IActionResult> ProfileEdit()
 	{

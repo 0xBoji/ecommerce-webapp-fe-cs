@@ -1,8 +1,12 @@
 ﻿@model ecommerce_webapp_fe_cs.Models.AdminModels.ProductAdmin;
+
+@{
+    Layout = "_Layout";
+}
+
 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#uploadExcelModal">Upload Products via Excel</button>
-    
-<button type="button" class="btn btn-success" data-toggle="modal" data-target="#createProductModal">Add New Product</button>
 <button type="button" id="exportExcel" class="btn btn-primary">Export Products to Excel</button>
+<button type="button" class="btn btn-success" data-toggle="modal" data-target="#createProductModal">Add New Product</button>
 
 <table id="productsTable" class="table">
     <thead>
@@ -16,6 +20,8 @@
     <tbody>
     </tbody>
 </table>
+
+@* Create new product *@
 <div id="createProductModal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -64,6 +70,8 @@
         </div>
     </div>
 </div>
+
+@* Update product *@
 <div id="editProductModal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -97,6 +105,8 @@
         </div>
     </div>
 </div>
+
+@* Upload Via Excels *@
 <div class="modal fade" id="uploadExcelModal" tabindex="-1" role="dialog" aria-labelledby="uploadExcelModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">

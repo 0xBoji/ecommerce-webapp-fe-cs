@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ecommerce_webapp_fe_cs.Models.AccountModels;
+namespace ecommerce_webapp_fe_cs.Models.AdminModels;
 
 public class LoginAdminModel
 {
@@ -9,7 +9,4 @@ public class LoginAdminModel
 
     [Required, DataType(DataType.Password), Display(Name = "Password")]
     public string Password { get; set; }
-
-    [Required, Display(Name = "Role")]
-    public string Role { get; set; }
 }

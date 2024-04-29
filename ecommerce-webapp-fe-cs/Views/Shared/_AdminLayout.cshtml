@@ -25,7 +25,7 @@
 
     <!-- Main wrapper -->
     <div id="main-wrapper">
-        @if (Context.Session.GetString("UserEmail") == "True")
+        @if (Context.Session.GetString("UserEmail") != null)
         {
             <!-- Nav header -->
             <div class="nav-header">
@@ -56,8 +56,6 @@
                                     </div>
                                 </div>
                             </div>
-
-
                         </div>
                     </nav>
                 </div>
@@ -73,31 +71,21 @@
                                 <i class="icon icon-single-04"></i><span class="nav-text">Dashboard</span>
                             </a>
                             <ul aria-expanded="false">
-                                <li><a href="@Url.Action("ShowProduct", "Admin")">Products</a></li>
-                                <li><a href="@Url.Action("Index", "Category")">Categories</a></li>
-                                <li><a href="@Url.Action("Index", "Discount")">Discounts</a></li>
-                                <li><a href="@Url.Action("Index", "Voucher")">Vouchers</a></li>
-                                <li><a href="@Url.Action("Index", "Order")">Order</a></li>
-                                <li><a href="@Url.Action("Index", "Refund")">Refund</a></li>
-                                <li><a href="@Url.Action("Index", "Return")">Return Request</a></li>
-                            </ul>
-                        </li>
-
-                        <li class="nav-label">Account</li>
-                        <li>
-                            <a class="has-arrow" href="javascript:void()" aria-expanded="false">
-                                <i class="icon icon-single-copy-06"></i><span class="nav-text">Pages</span>
-                            </a>
-                            <ul aria-expanded="false">
+                                <li><a href="@Url.Action("Index", "Admin")">Index</a></li>
+                                <li><a href="@Url.Action("ShowList", "Admin")">Products</a></li>
+                                <li><a href="@Url.Action("ShowNegotiations", "Admin")">Negotiates</a></li>
+                                <li><a href="@Url.Action("ShowBlogs", "Admin")">Blogs</a></li>
                                 <li>
                                     @if (string.IsNullOrEmpty(Context.Session.GetString("UserEmail")))
                                     {
-                                        <a class="genric-btn info circle" asp-controller="Admin" asp-action="Login">Login</a>
+                                        <a class="genric-btn info circle" href="@Url.Action("LoginAdmin", "Admin")">Login</a>
                                     }
                                     else
                                     {
                                         <form asp-controller="Admin" asp-action="Logout" method="post">
-                                            <button type="submit" class="btn btn-success info circle" style="margin:10px 0px 10px 42px; border:none; color:#878a9e; background-color:#353b5e;">Logout</button>
+                                            <button type="submit" class="btn btn-success info circle" style="margin:10px 0px 10px 42px; border:none; 
+                                                color:#878a9e; background-color:#353b5e;">Logout
+                                            </button>
                                         </form>
                                     }
                                 </li>
@@ -111,19 +99,13 @@
         {
             <div class="alert alert-danger" role="alert">You must be an admin and logged in to see this content.</div>
             <!-- Provide a link or button to go to the login page -->
-            <a class="btn btn-primary" style="margin: 250px 0 0 700px;" href="@Url.Action("Login", "Admin")">Go to Login Page</a>
+            <a class="btn btn-primary" style="margin: 250px 0 0 700px;" href="@Url.Action("LoginAdmin", "Admin")">Go to Login Page</a>
         }
 
         <div>
             @RenderBody()
         </div>
 
-        <!-- Footer -->
-        <footer>
-            <div class="copyright">
-                <p>Copyright © Designed &amp; Developed by Quixkit</p>
-            </div>
-        </footer>
         @if (IsSectionDefined("Scripts"))
         {
             @RenderSection("Scripts", required: false)

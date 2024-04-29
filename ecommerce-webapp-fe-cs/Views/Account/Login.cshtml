@@ -11,10 +11,8 @@
                 <img src="~/login/images/img-01.png" alt="IMG">
             </div>
 
-            <form class="login100-form validate-form" asp-action="Login" method="post">
-                <span class="login100-form-title">
-                    Member Login
-                </span>
+            <form class="login100-form validate-form" asp-controller="Account" asp-action="Login" method="post">
+                <span class="login100-form-title">Member Login</span>
 
                 <div asp-validation-summary="ModelOnly" style="color: red;font-weight: bolder;padding-left: 30px;padding-bottom: 10px;"></div>
                 <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
