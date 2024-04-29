@@ -8,5 +8,6 @@ public class ProfileModel
     public string Email { get; set; }
     public string Role { get; set; }
     public string PhoneNum { get; set; }
-    public string UserImg { get; set; }
+	public string AddressLine1 { get; set; }
+	public string UserImg { get; set; }
 }

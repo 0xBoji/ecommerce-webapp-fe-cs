@@ -147,4 +147,26 @@
             </div>
         </div>
     </div>
+
+<div class="profile-container">
+    <h1>User Profile</h1>
+    <div>
+        <p>Username: @Model.Username</p>
+        <p>First Name: @Model.FirstName</p>
+        <p>Last Name: @Model.LastName</p>
+        <p>Phone Number: @Model.PhoneNum</p>
+        <p>Address Line1: @Model.AddressLine1</p>
+
+        @if (!string.IsNullOrEmpty(Model.UserImg))
+        {
+            <img src="~/Images/@Model.UserImg" alt="User Image" style="max-width: 150px; max-height: 150px;" />
+        }
+    </div>
+
+    <a asp-controller="Account" asp-action="ProfileEdit">Edit</a>
+    <!-- Logout Button -->
+    <form asp-action="Logout" asp-controller="Account" method="post">
+        <button type="submit" class="btn btn-danger">Logout</button>
+    </form>
+
 </div>

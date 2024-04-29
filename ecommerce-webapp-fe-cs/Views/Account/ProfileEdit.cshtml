@@ -122,7 +122,7 @@
 									<h6 class="mb-0">Phone</h6>
 								</div>
 								<div class="col-sm-9 text-secondary">
-									<input type="number" placeholder="PhoneNumber" asp-for="PhoneNum" class="input" required value="@Model.PhoneNum">
+									<input type="text" placeholder="PhoneNumber" asp-for="PhoneNum" class="input" required value="@Model.PhoneNum">
 								</div>
 							</div>
 							<hr>
@@ -131,7 +131,70 @@
 									<h6 class="mb-0">Avatar</h6>
 								</div>
 								<div class="col-sm-9 text-secondary">
-									<input type="file" name="file" accept=".jpg, .jpeg, .png" required />
+									<input type="file" name="UserImg" accept=".jpg, .jpeg, .png" required />
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col-sm-3">
+									<h6 class="mb-0">CompanyName</h6>
+								</div>
+								<div class="col-sm-9 text-secondary">
+									<input type="text" placeholder="CompanyName" asp-for="CompanyName" class="input" required value="@Model.CompanyName">
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col-sm-3">
+									<h6 class="mb-0">AddressLine1</h6>
+								</div>
+								<div class="col-sm-9 text-secondary">
+									<input type="text" placeholder="AddressLine1" asp-for="AddressLine1" class="input" required value="@Model.AddressLine1">
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col-sm-3">
+									<h6 class="mb-0">AddressLine2</h6>
+								</div>
+								<div class="col-sm-9 text-secondary">
+									<input type="text" placeholder="AddressLine2" asp-for="AddressLine2" class="input" required value="@Model.AddressLine2">
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col-sm-3">
+									<h6 class="mb-0">Country</h6>
+								</div>
+								<div class="col-sm-9 text-secondary">
+									<input type="text" placeholder="Country" asp-for="Country" class="input" required value="@Model.Country">
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col-sm-3">
+									<h6 class="mb-0">Province</h6>
+								</div>
+								<div class="col-sm-9 text-secondary">
+									<input type="text" placeholder="Province" asp-for="Province" class="input" value="@Model.Province">
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col-sm-3">
+									<h6 class="mb-0">City</h6>
+								</div>
+								<div class="col-sm-9 text-secondary">
+									<input type="text" placeholder="City" asp-for="City" class="input" required value="@Model.City">
+								</div>
+							</div>
+							<hr>
+							<div class="row">
+								<div class="col-sm-3">
+									<h6 class="mb-0">PostalCode</h6>
+								</div>
+								<div class="col-sm-9 text-secondary">
+									<input type="text" placeholder="PostalCode" asp-for="PostalCode" class="input" required value="@Model.PostalCode">
 								</div>
 							</div>
 							<hr>

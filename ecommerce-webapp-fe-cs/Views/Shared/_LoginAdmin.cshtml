@@ -29,6 +29,11 @@
 			scale: 1.1
 		})
 	</script>
+	@if (IsSectionDefined("Scripts"))
+	{
+		@RenderSection("Scripts", required: false)
+	}
+
 	<script src="~/login/js/main.js"></script>
 </body>
 </html>
